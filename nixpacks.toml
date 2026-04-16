@@ -1,5 +1,9 @@
 [phases.install]
-cmds = ["npm ci"]
+cmds = ["npm install --omit=dev"]
+
+[variables]
+NODE_ENV = "production"
+NPM_CONFIG_PRODUCTION = "false"
 
 [start]
 cmd = "node server.js"
