@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LPTI 恋爱人格鉴定</title>
+  <style>
+    :root {
+      --panel: #ffffff; --text: #1a0812; --muted: #7c5868;
+      --line: #f0d4e0; --soft: #fce7f3; --accent: #be185d; --accent-strong: #9d174d;
+      --shadow: 0 16px 40px rgba(190,24,93,0.10); --radius: 22px;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; background: radial-gradient(circle at top left, #fce7f3 0, #fff0f6 40%, #fff5f8 100%); color: var(--text); min-height: 100vh; }
+    .shell { max-width: 980px; margin: 0 auto; padding: 24px 16px 56px; }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .hero { padding: 32px; margin-top: 20px; position: relative; overflow: hidden; }
+    .hero::after { content: ""; position: absolute; right: -60px; top: -60px; width: 200px; height: 200px; border-radius: 50%; background: linear-gradient(180deg, rgba(190,24,93,0.15), rgba(220,38,38,0.05)); pointer-events: none; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--accent-strong); border: 1px solid var(--line); background: var(--soft); border-radius: 999px; padding: 8px 14px; margin-bottom: 18px; }
+    h1,h2,h3,p { margin: 0; }
+    .hero h1 { font-size: clamp(28px,5vw,52px); line-height: 1.08; letter-spacing: -0.03em; max-width: 680px; }
+    .hero .sub { margin-top: 14px; color: var(--muted); font-size: 15px; line-height: 1.75; max-width: 720px; }
+    .hero-grid { display: grid; grid-template-columns: 1.3fr 0.9fr; gap: 18px; align-items: stretch; margin-top: 24px; }
+    @media (max-width:600px) { .hero-grid { grid-template-columns: 1fr; } }
+    .mini-panel { padding: 18px; border-radius: 18px; border: 1px solid var(--line); background: linear-gradient(180deg,#fff5f8,#fce7f3); }
+    .mini-panel h3 { font-size: 15px; margin-bottom: 10px; }
+    .mini-panel ul { margin: 0; padding-left: 18px; color: var(--muted); line-height: 1.8; font-size: 14px; }
+    button { border: 0; cursor: pointer; transition: transform .16s ease, opacity .16s ease; font: inherit; }
+    button:hover { transform: translateY(-1px); }
+    button:disabled { cursor: not-allowed; opacity: 0.55; transform: none; }
+    .btn-primary { background: var(--accent-strong); color: #fff; padding: 14px 24px; border-radius: 14px; box-shadow: 0 12px 30px rgba(157,23,77,0.22); font-weight: 700; font-size: 15px; }
+    .btn-secondary { background: #fff; color: var(--accent-strong); padding: 14px 24px; border-radius: 14px; border: 1px solid var(--line); font-weight: 700; font-size: 15px; }
+    .perspective-picker { display: flex; gap: 12px; margin: 20px 0 4px; flex-wrap: wrap; }
+    .persp-btn { flex: 1; min-width: 200px; padding: 16px 20px; border-radius: 16px; border: 2px solid var(--line); background: #fff; text-align: left; cursor: pointer; transition: all .15s ease; }
+    .persp-btn:hover { border-color: var(--accent); background: var(--soft); transform: translateY(-2px); }
+    .persp-btn.active { border-color: var(--accent-strong); background: var(--soft); box-shadow: 0 4px 16px rgba(157,23,77,0.15); }
+    .persp-btn .persp-icon { font-size: 28px; margin-bottom: 8px; display: block; }
+    .persp-btn .persp-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .persp-btn .persp-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+    .persp-btn.active .persp-title { color: var(--accent-strong); }
+    .start-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; align-items: center; }
+    .screen { display: none; }
+    .screen.active { display: block; }
+    .test-wrap { padding: 22px; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 18px; flex-wrap: wrap; }
+    .progress { flex: 1; min-width: 240px; height: 10px; background: #f8d7e8; border-radius: 999px; overflow: hidden; }
+    .progress > span { display: block; height: 100%; background: linear-gradient(90deg,var(--accent-strong),#ec4899); border-radius: 999px; transition: width .3s ease; }
+    .progress-label { font-size: 13px; color: var(--muted); white-space: nowrap; }
+    .persp-tag { font-size: 11px; font-weight: 700; color: var(--accent-strong); background: var(--soft); border-radius: 999px; padding: 4px 12px; border: 1px solid var(--line); }
+    .q-card { padding: 28px 28px 22px; }
+    .q-dim { display: inline-block; font-size: 11px; font-weight: 700; color: var(--accent-strong); background: var(--soft); border-radius: 999px; padding: 4px 12px; margin-bottom: 14px; letter-spacing: .05em; }
+    .q-text { font-size: 18px; font-weight: 700; line-height: 1.55; margin-bottom: 22px; }
+    .options { display: flex; flex-direction: column; gap: 10px; }
+    .opt-btn { text-align: left; background: var(--soft); border: 2px solid transparent; border-radius: 14px; padding: 14px 18px; font-size: 14px; line-height: 1.5; color: var(--text); transition: all .15s ease; }
+    .opt-btn:hover { border-color: var(--accent); background: #fce7f3; transform: translateX(4px); }
+    .opt-btn.selected { border-color: var(--accent-strong); background: #fce7f3; font-weight: 600; }
+    .nav-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 28px 22px; gap: 12px; }
+    .result-wrap { padding: 28px; }
+    .result-badge { display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg,var(--accent-strong),#ec4899); color: #fff; border-radius: 999px; padding: 8px 20px; font-size: 12px; font-weight: 700; letter-spacing: .08em; margin-bottom: 18px; }
+    .result-code { font-size: clamp(40px,8vw,72px); font-weight: 900; letter-spacing: -.03em; line-height: 1; }
+    .result-cn { font-size: 22px; font-weight: 700; color: var(--muted); margin-top: 6px; }
+    .result-intro { font-size: 18px; font-weight: 700; color: var(--accent-strong); margin: 16px 0; padding: 16px 20px; background: var(--soft); border-radius: 14px; border-left: 4px solid var(--accent-strong); }
+    .result-desc { font-size: 15px; line-height: 1.85; color: #2d2d3a; margin-bottom: 24px; }
+    .dims-title { font-size: 14px; font-weight: 700; color: var(--muted); margin-bottom: 14px; letter-spacing: .05em; }
+    .dims-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 24px; }
+    @media (max-width:600px) { .dims-grid { grid-template-columns: 1fr 1fr; } }
+    .dim-item { background: var(--soft); border-radius: 12px; padding: 12px 14px; }
+    .dim-item .dim-name { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+    .dim-bar-bg { height: 6px; background: #f0c4d8; border-radius: 999px; overflow: hidden; }
+    .dim-bar { height: 100%; border-radius: 999px; transition: width .5s ease; }
+    .dim-bar.L { background: #f87171; width: 20%; }
+    .dim-bar.M { background: #fbbf24; width: 55%; }
+    .dim-bar.H { background: #34d399; width: 90%; }
+    .dim-score { font-size: 12px; font-weight: 700; margin-top: 5px; }
+    .dim-score.L { color: #dc2626; } .dim-score.M { color: #d97706; } .dim-score.H { color: #059669; }
+    .result-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+    .hidden-badge { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg,#dc2626,#9d174d); color: #fff; border-radius: 999px; padding: 8px 20px; font-size: 12px; font-weight: 700; letter-spacing: .08em; margin-bottom: 18px; }
+    .result-code.hidden-type { color: #dc2626; }
+  </style>
+</head>
+<body>
+<div class="shell">
+  <div id="intro" class="screen active">
+    <div class="card hero">
+      <div class="eyebrow">💘 LPTI 恋爱人格鉴定</div>
+      <h1>恋爱人格，一测见真章</h1>
+      <p class="sub">30道题，5大模型，15个维度，13种人格。<br>可以鉴定你的恋人，也可以审视你自己。</p>
+      <div class="hero-grid">
+        <div class="mini-panel">
+          <h3>🔬 五大分析模型</h3>
+          <ul>
+            <li>A 依恋模型 — 安全感需求 / 独立性 / 分离焦虑</li>
+            <li>C 沟通模型 — 表达直接度 / 冲突处理 / 倾听质量</li>
+            <li>E 情绪模型 — 情绪稳定性 / 情绪责任 / 修复能力</li>
+            <li>B 边界模型 — 自我边界 / 对方边界 / 关系边界</li>
+            <li>G 成长模型 — 自我认知 / 改变意愿 / 关系投资</li>
+          </ul>
+        </div>
+        <div class="mini-panel">
+          <h3>📋 关于测试</h3>
+          <ul>
+            <li>共 30 道题，约 5 分钟</li>
+            <li>13 种人格类型（含隐藏）</li>
+            <li>纯本地计算，不上传数据</li>
+            <li>仅供娱乐，请勿对号入座</li>
+          </ul>
+        </div>
+      </div>
+      <div style="margin-top:24px;">
+        <div style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:10px;letter-spacing:.05em;">选择测评视角</div>
+        <div class="perspective-picker">
+          <button class="persp-btn active" id="persp-other" onclick="setPerspective('other')">
+            <span class="persp-icon">🔍</span>
+            <div class="persp-title">鉴定我的恋人/伴侣</div>
+            <div class="persp-desc">根据对方的行为模式，测出他/她是什么恋爱人格</div>
+          </button>
+          <button class="persp-btn" id="persp-self" onclick="setPerspective('self')">
+            <span class="persp-icon">🪞</span>
+            <div class="persp-title">审视我自己</div>
+            <div class="persp-desc">测一测你在感情里是什么类型</div>
+          </button>
+        </div>
+      </div>
+      <div class="start-row">
+        <button class="btn-primary" onclick="startTest()">开始测评 →</button>
+        <div id="counter" style="font-size:13px;color:var(--muted);display:none;">已有 <strong id="counter-num">0</strong> 人完成测评</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="quiz" class="screen">
+    <div class="card" style="margin-top:20px;">
+      <div class="test-wrap">
+        <div class="topbar">
+          <div class="progress"><span id="progress-bar" style="width:0%"></span></div>
+          <div class="progress-label" id="progress-label">0 / 30</div>
+          <div class="persp-tag" id="persp-tag">鉴定恋人</div>
+        </div>
+        <div id="q-container"></div>
+        <div class="nav-row">
+          <button class="btn-secondary" id="btn-prev" onclick="prevQ()" disabled>← 上一题</button>
+          <button class="btn-primary" id="btn-next" onclick="nextQ()" disabled>下一题 →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="result" class="screen">
+    <div class="card" style="margin-top:20px;"><div class="result-wrap" id="result-content"></div></div>
+  </div>
+</div>
+<script>
+const DIM_META = {
+  A1:{name:'A1 安全感需求',model:'A 依恋模型'},A2:{name:'A2 独立性',model:'A 依恋模型'},A3:{name:'A3 分离焦虑',model:'A 依恋模型'},
+  C1:{name:'C1 表达直接度',model:'C 沟通模型'},C2:{name:'C2 冲突处理',model:'C 沟通模型'},C3:{name:'C3 倾听质量',model:'C 沟通模型'},
+  E1:{name:'E1 情绪稳定性',model:'E 情绪模型'},E2:{name:'E2 情绪责任',model:'E 情绪模型'},E3:{name:'E3 修复能力',model:'E 情绪模型'},
+  B1:{name:'B1 自我边界',model:'B 边界模型'},B2:{name:'B2 对方边界',model:'B 边界模型'},B3:{name:'B3 关系边界',model:'B 边界模型'},
+  G1:{name:'G1 自我认知',model:'G 成长模型'},G2:{name:'G2 改变意愿',model:'G 成长模型'},G3:{name:'G3 关系投资',model:'G 成长模型'},
+};
+const DIM_ORDER=['A1','A2','A3','C1','C2','C3','E1','E2','E3','B1','B2','B3','G1','G2','G3'];
+
+const TYPE_LIBRARY={
+  CLING:{code:'CLING',cn:'黏附型',intro:'"你为什么不回我消息"',
+    descOther:'你的另一半测出了「黏附型」。他/她的手机屏幕常亮，不是在刷视频，是在等你回消息。三分钟没回，开始担心；十分钟没回，开始想象各种可能性；三十分钟没回，已经在脑子里排演了一遍分手场景。他/她的安全感需要你每天、每小时、最好每分钟来充值。"在吗"是他/她最常发的三个字。他/她不是不知道这很累，只是停不下来，因为那种不确定感太难受了。他/她越黏，你越想逃；你越逃，他/她越黏。这是一个完美的死循环。',
+    descSelf:'你测出了「黏附型」。你的手机屏幕常亮，不是因为你在刷视频，是因为你在等对方回消息。三分钟没回，你开始担心；十分钟没回，你开始想象各种可能性；三十分钟没回，你已经在脑子里排演了一遍分手场景。你的安全感需要对方每天、每小时、最好每分钟来充值。你越黏，对方越想逃；对方越逃，你越黏。这是一个完美的死循环。你需要的不是一个更有耐心的伴侣，你需要的是先学会和自己待着。'},
+  GHOST:{code:'GHOST',cn:'消失型',intro:'"我只是需要点空间"',
+    descOther:'你的另一半测出了「消失型」。他/她消失是有规律的：关系进展太快——消失；你表达需求——消失；有冲突要处理——消失；感觉太亲密了——消失。"我需要空间"是他/她的口头禅，但说的"空间"其实是"距离"。你在等他/她，在担心，在猜测，在自我怀疑——"是我哪里做错了吗？"他/她消失的这段时间，你经历的是一种缓慢的折磨。而他/她回来的时候，好像什么都没发生，还有点奇怪你为什么情绪不好。',
+    descSelf:'你测出了「消失型」。你消失是有规律的：关系进展太快——消失；对方表达需求——消失；有冲突要处理——消失；感觉太亲密了——消失。"我需要空间"是你的口头禅，但你说的"空间"其实是"距离"，是一种当情感靠近时本能的后退。对方在等你，在担心，在猜测，在自我怀疑——"是我哪里做错了吗？"你需要搞清楚：是真的需要独处时间，还是只要关系一深入就想逃？'},
+  DRAMA:{code:'DRAMA',cn:'情绪炸弹',intro:'"你根本不在乎我"',
+    descOther:'你的另一半测出了「情绪炸弹」。他/她的情绪是一颗随机引爆的炸弹，你永远不知道今天踩到的是哪根线。早上还好好的，下午因为一句话炸了；昨天刚和好，今天因为一个表情又炸了；你以为没事了，结果他/她把三个月前的一件事翻出来了。他/她最常说的话是"你根本不在乎我"，意思通常是"我现在很难受，但我不知道怎么说清楚"。他/她把你变成了一道无解的题：安慰了说"你在无理取闹"，不安慰说"你不在乎我"。',
+    descSelf:'你测出了「情绪炸弹」。你的情绪是一颗随机引爆的炸弹，对方永远不知道今天踩到的是哪根线。你最常说的话是"你根本不在乎我"，这句话的意思通常是"我现在很难受，但我不知道怎么说清楚"。你的情绪是真实的，你的感受是真实的，但你表达的方式让对方不知道怎么回应。你不是坏人，你只是没有学过怎么处理强烈的情绪，所以只能让它爆炸。'},
+  PERF:{code:'PERF',cn:'完美伴侣幻想者',intro:'"我只是希望你能更好"',
+    descOther:'你的另一半测出了「完美伴侣幻想者」。他/她脑子里住着一个完美的伴侣，那个人更体贴、更上进、更懂他/她。现实中的你和那个人有差距，于是开始了漫长的"改造工程"。"你能不能……""你为什么不……""你看别人……"这些句式是他/她最常用的，他/她以为在帮你成长，你感受到的是：我现在的样子不够好。所有关系最终都要面对这个问题：他/她爱的是你，还是希望你成为的样子？',
+    descSelf:'你测出了「完美伴侣幻想者」。你的脑子里住着一个完美的伴侣，那个人更体贴、更上进、更懂你。现实中的对方和那个人有差距，于是你开始了漫长的"改造工程"。"你能不能……""你为什么不……""你看别人……"你以为在帮对方成长，对方感受到的是：我现在的样子不够好。你爱的是这个人，还是你希望这个人成为的样子？'},
+  AVOI:{code:'AVOI',cn:'回避型',intro:'"我不擅长表达，你懂的"',
+    descOther:'你的另一半测出了「回避型」。"我不擅长表达"是他/她最常用的免责声明，它可以解释为什么不说爱、为什么在你难过时不知所措、为什么在关系出现问题时选择沉默而不是沟通。他/她不是不爱，只是不会爱——或者说，他/她学到的爱的方式是沉默的、含蓄的。这没有对错，但在一段需要语言沟通的关系里，这会造成很大的误解。你不是不懂，你只是累了。累了猜，累了等，累了在他/她沉默的时候不知道是生气了、冷漠了、还是只是在想事情。',
+    descSelf:'你测出了「回避型」。"我不擅长表达"是你最常用的免责声明，它可以解释为什么你不说爱、为什么你在对方难过时不知所措、为什么你在关系出现问题时选择沉默而不是沟通。你不是不爱，你只是不会爱。对方不是不懂，对方只是累了。累了猜，累了等，累了在你沉默的时候不知道你是生气了、冷漠了、还是只是在想事情。"你懂的"是你给对方出的一道题，但爱不应该是一道需要反复猜的谜。'},
+  CTRL:{code:'CTRL',cn:'控制型',intro:'"我这样做是因为我爱你"',
+    descOther:'你的另一半测出了「控制型」。他/她的爱是有条件的，条件是：你按照他/她的方式来。你的朋友、穿着、时间安排、手机联系人，都在他/她的监控范围内。他/她不把这叫控制，叫"在乎"，叫"负责任"，叫"为你好"。查手机——因为爱你；不让见朋友——因为爱你；让你穿什么——因为爱你。爱不是占有，不是管理，不是把你的自由换成他/她的安全感。那个笼子，最终会把你们两个都困住。',
+    descSelf:'你测出了「控制型」。你的爱是有条件的，条件是：对方按照你的方式来。对方的朋友、穿着、时间安排、手机联系人，都在你的监控范围内。你不把这叫控制，你叫"在乎"，叫"负责任"，叫"为你好"。"我这样做是因为我爱你"是一句很危险的话，因为它可以为几乎任何行为提供道德豁免。爱不是占有，不是管理，不是把对方的自由换成你的安全感。'},
+  HEAL:{code:'HEAL',cn:'拯救者型',intro:'"我可以改变他/她"',
+    descOther:'你的另一半测出了「拯救者型」。他/她有一个超能力：专门被"需要被拯救"的人吸引。那些有故事的、有伤的、有问题的——对他/她有致命的吸引力。因为在他们身上，他/她找到了价值感：我是被需要的，我可以改变他/她。他/她投入大量时间、精力、情感去帮对方，但有一个问题：对方并不总是想被改变。他/她的爱里有一部分是真心的，但也有一部分是自己的需求——需要被需要，需要有价值。真正的爱不需要一方是救世主，另一方是待救者。',
+    descSelf:'你测出了「拯救者型」。你有一个超能力：专门被"需要被拯救"的人吸引。那些有故事的、有伤的、有问题的——对你有致命的吸引力。因为在他们身上，你找到了价值感：我是被需要的，我可以改变他/她。你投入大量时间、精力、情感去帮对方，但有一个问题：对方并不总是想被改变。你的爱里有一部分是真心的，但也有一部分是你自己的需求——需要被需要，需要有价值。'},
+  ANXI:{code:'ANXI',cn:'预期灾难型',intro:'"我感觉你要离开我了"',
+    descOther:'你的另一半测出了「预期灾难型」。他/她有一种特殊的能力：在关系最好的时候，感到最不安。你对他/她越好，他/她越害怕失去；关系越稳定，他/她越觉得"不正常，肯定有什么问题"。"我感觉你要离开我了"是他/她的口头禅，有时候有根据，有时候完全没有。问题是，他/她的行为——反复确认、过度解读、提前防御——反而在把你推走。他/她在用对"失去"的恐惧，提前破坏一段还好好的关系。',
+    descSelf:'你测出了「预期灾难型」。你有一种特殊的能力：在关系最好的时候，感到最不安。对方对你越好，你越害怕失去；关系越稳定，你越觉得"不正常，肯定有什么问题"。"我感觉你要离开我了"是你的口头禅。问题是，你的行为——反复确认、过度解读、提前防御——反而在把对方推走。你在用对"失去"的恐惧，提前破坏一段还好好的关系。这叫自我实现的预言。'},
+  GROW:{code:'GROW',cn:'成长型',intro:'"我们可以一起变得更好"',
+    descOther:'你的另一半测出了「成长型」。在所有类型里，他/她是最难得的一种。他/她知道自己的问题，愿意说出来，也愿意听你说。他/她不把关系当成一场竞争，也不把你当成一个需要管理的项目。他/她会吵架，但吵完了会聊，会道歉，会真的解决问题。遇到他/她，是你的运气。希望你也是同样值得的人。',
+    descSelf:'你测出了「成长型」。在所有类型里，你是最难得的一种。你知道自己的问题，你愿意说出来，你也愿意听对方说。你不把关系当成一场竞争，也不把对方当成一个需要管理的项目，你把这段感情当成一个两个人一起成长的空间。你有安全感，但这个安全感不是对方给的，是你自己建立的。遇到你的人，是运气好。'},
+  PLAY:{code:'PLAY',cn:'游戏人间型',intro:'"认真你就输了"',
+    descOther:'你的另一半测出了「游戏人间型」。感情对他/她来说是一场游戏，规则是：不能先动真情，不能先表白，不能先认真。谁先认真谁就输了。他/她很会撩，很会若即若离，很会制造吸引力。但他/她不会投入，不会脆弱，不会真正打开自己。所以他/她的感情史里有很多故事，但很少有真正深入的关系。有一天他/她会遇到一个让他/她想认真的人，然后发现，已经不会了。',
+    descSelf:'你测出了「游戏人间型」。感情对你来说是一场游戏，规则是：不能先动真情，不能先表白，不能先认真。谁先认真谁就输了。你很会撩，很会若即若离，很会制造吸引力。但你不会投入，不会脆弱，不会真正打开自己。"认真你就输了"这句话本身就是一个问题——感情里没有输赢，如果你觉得认真是输，那你从一开始就在打一场错误的战争。'},
+  RELY:{code:'RELY',cn:'过度依赖型',intro:'"没有你我不知道怎么办"',
+    descOther:'你的另一半测出了「过度依赖型」。他/她把你当成了全部——情感支柱、决策顾问、快乐来源、人生意义。"没有你我不知道怎么办"不是情话，是真实的心理状态。他/她的情绪、自信、安全感，都外包给了你。这对你来说是一种压力，一种很重的压力。你不只是在谈恋爱，你在承担他/她的整个心理世界。这不公平，也不可持续。',
+    descSelf:'你测出了「过度依赖型」。你把对方当成了你的全部——情感支柱、决策顾问、快乐来源、人生意义。"没有你我不知道怎么办"不是情话，是真实的心理状态。你的情绪、自信、安全感，都外包给了对方。这对对方来说是一种很重的压力。当你把自己的完整性外包出去，你就失去了独立存在的能力。爱一个人，不是成为他们的附属品。'},
+  SAFE:{code:'SAFE',cn:'安全型',intro:'"我在，说吧"',
+    descOther:'你的另一半测出了「安全型」。"我在，说吧"——这四个字，是整个测评里最温暖的触发语。他/她不完美，也有情绪，也有需求，也有做不好的时候。但他/她有一个核心的稳定性：知道自己是谁，知道在这段关系里要什么，也知道你是一个独立的、值得被尊重的人。他/她的安全感不依赖你的每一条回复，自我价值不取决于这段关系的状态。在他/她身边，你会感到被看见、被接纳、被支持。这种感觉，是很多人一辈子都在寻找的东西。',
+    descSelf:'你测出了「安全型」。"我在，说吧"——这四个字，是整个测评里最温暖的触发语。你不完美，你也有情绪，也有需求，也有做不好的时候。但你有一个核心的稳定性：你知道自己是谁，你知道自己在这段关系里要什么，你也知道对方是一个独立的、值得被尊重的人。你的安全感不依赖对方的每一条回复，你的自我价值不取决于这段关系的状态。遇到你的人，会在这段关系里感到被看见、被接纳、被支持。'},
+};
+
+const HIDDEN_TYPE={code:'NARC',cn:'情感掠夺者',intro:'"你离不开我的"',
+  descOther:'你的另一半测出了「情感掠夺者」。这不是一个好的结果，请认真对待。他/她在关系里的模式是：索取、控制、不反思。他/她的需求是无限的，你的边界是不存在的，他/她对自己行为的觉察是接近零的。他/她可能会用魅力吸引你，用愧疚留住你，用恐惧控制你。如果你在这段关系里感到持续的痛苦和窒息，这不是你的问题。离开是你可以为自己做的事。',
+  descSelf:'你测出了「情感掠夺者」。这不是一个好的结果，我们希望你认真对待这个结果。你在关系里的模式是：索取、控制、不反思。你的需求是无限的，对方的边界是不存在的，你对自己行为的觉察是接近零的。如果你身边有人在告诉你"你让我很痛苦"，请认真听。不是为了对方，是为了你自己——这种模式最终会让你孤立，让你失去所有真实的连接。专业的心理咨询可以帮助你。'
+};
+
+const NORMAL_TYPES=[
+  {code:'CLING',pattern:'HLH-LML-HHM-LLM-LLM'},
+  {code:'GHOST',pattern:'LHL-LLM-LLL-HHL-LLL'},
+  {code:'DRAMA',pattern:'HLL-LLM-HHL-LLL-LLM'},
+  {code:'PERF', pattern:'MML-MLM-MMM-MHL-MLM'},
+  {code:'AVOI', pattern:'LHL-LLL-LLH-HHL-LLL'},
+  {code:'CTRL', pattern:'HLH-LLL-HML-LHH-LLL'},
+  {code:'HEAL', pattern:'HML-MHM-MML-LMH-MLM'},
+  {code:'ANXI', pattern:'HLH-LLL-HHH-LLL-LLM'},
+  {code:'GROW', pattern:'MLH-HHH-MHH-MMH-HHH'},
+  {code:'PLAY', pattern:'LHL-LLM-LLL-HHL-LLL'},
+  {code:'RELY', pattern:'HLH-LLM-MMM-LLM-LMM'},
+  {code:'SAFE', pattern:'MHM-HHH-MHH-MHH-HHH'},
+];
+
+const questions=[
+  {id:'q1',dim:'A1',
+    other:'对方两小时没回你的消息，他/她会？',
+    self:'对方两小时没回你的消息，你会？',
+    options:[{label:'连续发消息，打电话，越来越焦虑，开始想最坏的情况',value:1},{label:'有点担心，发了一条"在吗"，然后努力让自己去做别的事',value:2},{label:'觉得他/她可能在忙，等他/她回来就好',value:3}]},
+  {id:'q2',dim:'A1',
+    other:'你说要和朋友出去玩，没邀请他/她，他/她的感受是？',
+    self:'对方说要和朋友出去玩，没邀请你，你的感受是？',
+    options:[{label:'不高兴，觉得你不重视他/她，想知道具体和谁在一起',value:1},{label:'有点失落，但告诉自己这很正常',value:2},{label:'替你高兴，约好下次一起',value:3}]},
+  {id:'q3',dim:'A2',
+    other:'谈恋爱之后，他/她的个人爱好和社交？',
+    self:'谈恋爱之后，你的个人爱好和社交？',
+    options:[{label:'基本都让步给了这段关系，对方的事就是自己的事',value:1},{label:'减少了一些，但还保留着，有时候会有点愧疚',value:2},{label:'基本没变，恋爱是生活的一部分，不是全部',value:3}]},
+  {id:'q4',dim:'A2',
+    other:'你问他/她周末想干什么，他/她通常？',
+    self:'对方问你周末想干什么，你通常？',
+    options:[{label:'"你决定就好，我都行"，然后私下希望对方能猜到自己想要什么',value:1},{label:'提了个方向，但很快说"或者你想去哪都可以"',value:2},{label:'直接说想做什么，也问对方的想法，一起商量',value:3}]},
+  {id:'q5',dim:'A3',
+    other:'你出差一周，他/她会？',
+    self:'对方出差一周，你会？',
+    options:[{label:'每天要视频，不视频睡不着，觉得对方在外面可能有问题',value:1},{label:'每天发消息，偶尔视频，有点想，但还好',value:2},{label:'正常联系，利用这段时间做自己的事，期待对方回来',value:3}]},
+  {id:'q6',dim:'A3',
+    other:'你说需要一点时间自己待着，他/她的反应是？',
+    self:'对方说需要一点时间自己待着，你的反应是？',
+    options:[{label:'觉得是不是自己哪里做错了，或者对方是不是不喜欢自己了',value:1},{label:'有点不安，但告诉自己这很正常，努力不去想',value:2},{label:'理解，给对方空间，等他/她准备好了再联系',value:3}]},
+  {id:'q7',dim:'C1',
+    other:'他/她对你有不满，通常会？',
+    self:'你对对方有不满，你通常会？',
+    options:[{label:'冷战，叹气，说"没事"，然后等你来问',value:1},{label:'绕弯子说，或者用反问来表达',value:2},{label:'直接说"我对这件事有点不高兴，我们聊一下"',value:3}]},
+  {id:'q8',dim:'C1',
+    other:'他/她想和你更亲密，会？',
+    self:'你想和对方更亲密，你会？',
+    options:[{label:'暗示，等你主动，如果你没反应就生闷气',value:1},{label:'说了，但说得很模糊，你可能没听懂',value:2},{label:'直接说出来，"我最近想多陪你"',value:3}]},
+  {id:'q9',dim:'C2',
+    other:'和你吵架，他/她的第一反应是？',
+    self:'和对方吵架，你的第一反应是？',
+    options:[{label:'升级，越说越激动，把以前的事都翻出来',value:1},{label:'沉默或者离开，等冷静了再说，但可能拖很久',value:2},{label:'说"我们先冷静一下，等一会儿再聊"',value:3}]},
+  {id:'q10',dim:'C2',
+    other:'吵完架，他/她通常？',
+    self:'吵完架，你通常？',
+    options:[{label:'等你来道歉，觉得自己没错，不会先低头',value:1},{label:'会主动和好，但不太会直接说"对不起"',value:2},{label:'如果有做错的地方，直接道歉；如果没有，说清楚自己的立场',value:3}]},
+  {id:'q11',dim:'C3',
+    other:'你在说一件让你困扰的事，他/她会？',
+    self:'对方在说一件让他/她困扰的事，你会？',
+    options:[{label:'听了一半开始给建议，或者说"你应该……"',value:1},{label:'听完了，然后说"那你怎么打算"',value:2},{label:'先问"你现在感觉怎么样"，确认对方需要什么再回应',value:3}]},
+  {id:'q12',dim:'C3',
+    other:'你在讲一个他/她不感兴趣的话题，他/她会？',
+    self:'对方在讲一个你不感兴趣的话题，你会？',
+    options:[{label:'明显心不在焉，或者转移话题',value:1},{label:'努力听，但没忍住说了一句"好了好了，知道了"',value:2},{label:'认真听，因为对方在乎的事你也想了解',value:3}]},
+  {id:'q13',dim:'E1',
+    other:'一件小事让他/她不开心，他/她会？',
+    self:'一件小事让你不开心，你会？',
+    options:[{label:'整天情绪都不好，你说什么都觉得烦',value:1},{label:'有情绪，但努力不迁怒，偶尔还是会表现出来',value:2},{label:'情绪来了，处理一下，不会让它影响和你的相处',value:3}]},
+  {id:'q14',dim:'E1',
+    other:'你说了一句让他/她不舒服的话，他/她会？',
+    self:'对方说了一句让你不舒服的话，你会？',
+    options:[{label:'立刻爆发，或者立刻冷战',value:1},{label:'忍住了，但心里记着，以后可能翻出来',value:2},{label:'当下说"这句话让我不太舒服，你是什么意思"',value:3}]},
+  {id:'q15',dim:'E2',
+    other:'他/她情绪不好，会？',
+    self:'你情绪不好，你会？',
+    options:[{label:'觉得是你的问题，"都是因为你……"',value:1},{label:'知道不全是你的问题，但还是会有点迁怒',value:2},{label:'自己处理，如果需要你支持，直接说"我现在状态不好，能陪我一下吗"',value:3}]},
+  {id:'q16',dim:'E2',
+    other:'你情绪不好，他/她会？',
+    self:'对方情绪不好，你会？',
+    options:[{label:'觉得是自己的问题，开始道歉和讨好',value:1},{label:'问了，对方说没事，就信了，但心里有点不安',value:2},{label:'给对方空间，说"我在，你需要的时候告诉我"',value:3}]},
+  {id:'q17',dim:'E3',
+    other:'吵架之后，他/她通常需要多久才能恢复？',
+    self:'吵架之后，你通常需要多久才能恢复？',
+    options:[{label:'很久，有时候几天，而且可能下次吵架把这次的也翻出来',value:1},{label:'当天或者第二天，但心里可能还有点疙瘩',value:2},{label:'等事情说清楚了就好了，不会拖着',value:3}]},
+  {id:'q18',dim:'E3',
+    other:'关系出现裂痕，他/她会？',
+    self:'关系出现裂痕，你会？',
+    options:[{label:'等着看，或者用冷战来测试你有多在乎',value:1},{label:'想修复，但不知道怎么开口',value:2},{label:'主动提出聊，说"我觉得我们最近有点问题，我们谈谈"',value:3}]},
+  {id:'q19',dim:'B1',
+    other:'你不喜欢他/她的某个朋友，他/她会？',
+    self:'对方不喜欢你的某个朋友，你会？',
+    options:[{label:'减少和那个朋友的来往，甚至断掉，为了让你安心',value:1},{label:'和那个朋友少见面，但心里有点委屈',value:2},{label:'解释和那个朋友的关系，如果你的担心没有根据，不会改变',value:3}]},
+  {id:'q20',dim:'B1',
+    other:'你希望他/她改变某个习惯，他/她会？',
+    self:'对方希望你改变某个习惯，你会？',
+    options:[{label:'立刻改，即使觉得这个习惯没问题',value:1},{label:'改了，但心里有点不情愿',value:2},{label:'听对方说为什么，如果有道理就改，如果没道理就说清楚',value:3}]},
+  {id:'q21',dim:'B2',
+    other:'你和异性朋友出去，他/她会？',
+    self:'对方和异性朋友出去，你会？',
+    options:[{label:'要求知道去哪、和谁、几点回来，不放心就要求带自己去',value:1},{label:'有点不安，但忍住了，偶尔会问一句',value:2},{label:'信任对方，不需要知道细节',value:3}]},
+  {id:'q22',dim:'B2',
+    other:'你的手机有密码，他/她会？',
+    self:'对方的手机有密码，你会？',
+    options:[{label:'想知道密码，觉得"真正的情侣不应该有秘密"',value:1},{label:'没要求，但有时候会好奇',value:2},{label:'那是对方的私人空间，不需要知道',value:3}]},
+  {id:'q23',dim:'B3',
+    other:'你的家人不太喜欢他/她，他/她会？',
+    self:'对方的家人不太喜欢你，你会？',
+    options:[{label:'要求对方在你和家人之间选边站',value:1},{label:'很难受，希望对方能帮自己说话',value:2},{label:'和对方一起想怎么处理，理解这是一个需要时间的问题',value:3}]},
+  {id:'q24',dim:'B3',
+    other:'你的朋友不喜欢他/她，他/她会？',
+    self:'你的朋友不喜欢你的对象，你会？',
+    options:[{label:'开始怀疑这段感情，或者让朋友少说',value:1},{label:'有点动摇，但还是坚持',value:2},{label:'听朋友的理由，自己判断，不让外部声音直接影响自己的决定',value:3}]},
+  {id:'q25',dim:'G1',
+    other:'他/她在关系里有什么固定的"坏习惯"，他/她？',
+    self:'你在关系里有什么固定的"坏习惯"，你？',
+    options:[{label:'不觉得自己有，问题都在你',value:1},{label:'知道一点，但不太想深想',value:2},{label:'比较清楚，而且和你聊过，在努力改',value:3}]},
+  {id:'q26',dim:'G1',
+    other:'上一段感情为什么结束，他/她觉得？',
+    self:'上一段感情为什么结束，你觉得？',
+    options:[{label:'都是对方的问题',value:1},{label:'双方都有问题，但主要是对方',value:2},{label:'自己也有问题，而且知道具体是哪些',value:3}]},
+  {id:'q27',dim:'G2',
+    other:'你说他/她的某个行为让你不舒服，他/她会？',
+    self:'对方说你的某个行为让他/她不舒服，你会？',
+    options:[{label:'防御，"你太敏感了"或者"我就是这样的人"',value:1},{label:'有点不舒服，但会想想有没有道理',value:2},{label:'认真听，问清楚，如果有道理就改',value:3}]},
+  {id:'q28',dim:'G2',
+    other:'他/她知道自己在关系里有一个不好的模式，会？',
+    self:'你知道自己在关系里有一个不好的模式，你会？',
+    options:[{label:'觉得对方应该接受，"我就是这样的人"',value:1},{label:'知道，但改起来很难，有时候还是会重复',value:2},{label:'主动告诉对方，一起想办法，也在寻求外部帮助',value:3}]},
+  {id:'q29',dim:'G3',
+    other:'这段关系需要他/她做一些妥协，他/她会？',
+    self:'这段关系需要你做一些妥协，你会？',
+    options:[{label:'不愿意妥协，觉得为什么要让步',value:1},{label:'会妥协，但心里有点委屈，可能以后会翻出来',value:2},{label:'愿意妥协，因为关系对自己来说值得，但不是无底线的妥协',value:3}]},
+  {id:'q30',dim:'G3',
+    other:'对这段关系的长期发展，他/她？',
+    self:'对这段关系的长期发展，你？',
+    options:[{label:'不想想太远，走一步看一步',value:1},{label:'有想过，但说不太清楚',value:2},{label:'有认真想过，也和对方聊过，有共同的方向',value:3}]},
+];
+
+let current=0,answers={},shuffled=[...questions],perspective='other';
+function setPerspective(p){perspective=p;document.getElementById('persp-other').classList.toggle('active',p==='other');document.getElementById('persp-self').classList.toggle('active',p==='self');}
+async function loadStats(){try{const r=await fetch('/api/lpti/stats');if(!r.ok)return;const d=await r.json();if(d.total>0){document.getElementById('counter-num').textContent=d.total.toLocaleString();document.getElementById('counter').style.display='block';}}catch(e){}}
+async function submitResult(tc,tcn,ds,a){try{await fetch('/api/lpti/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type_code:tc,type_cn:tcn,dim_scores:ds,answers:a})});}catch(e){}}
+loadStats();
+function startTest(){shuffled=[...questions].sort(()=>Math.random()-.5);current=0;answers={};document.getElementById('persp-tag').textContent=perspective==='other'?'🔍 鉴定恋人':'🪞 审视自己';showScreen('quiz');renderQ();}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+function renderQ(){const q=shuffled[current];const total=shuffled.length;document.getElementById('progress-bar').style.width=Math.round((current/total)*100)+'%';document.getElementById('progress-label').textContent=`${current} / ${total}`;const sel=answers[q.id];document.getElementById('btn-prev').disabled=current===0;document.getElementById('btn-next').disabled=!sel;document.getElementById('btn-next').textContent=current===total-1?'查看结果 →':'下一题 →';const qText=perspective==='other'?q.other:q.self;document.getElementById('q-container').innerHTML=`<div class="card q-card"><div class="q-dim">${DIM_META[q.dim]?.name||q.dim} · ${DIM_META[q.dim]?.model||''}</div><div class="q-text">${qText}</div><div class="options">${q.options.map(o=>`<button class="opt-btn ${sel===o.value?'selected':''}" onclick="selectOpt('${q.id}',${o.value})">${o.label}</button>`).join('')}</div></div>`;}
+function selectOpt(qid,val){answers[qid]=val;document.getElementById('btn-next').disabled=false;renderQ();}
+function nextQ(){const q=shuffled[current];if(!answers[q.id])return;if(current===shuffled.length-1)calcResult();else{current++;renderQ();}}
+function prevQ(){if(current>0){current--;renderQ();}}
+function calcResult(){let c1=0,mc=0;for(const q of shuffled){if(answers[q.id]===1){c1++;mc=Math.max(mc,c1);}else c1=0;}if(mc>=5){showResult(HIDDEN_TYPE,null);return;}const ds={};for(const q of questions){if(!ds[q.dim])ds[q.dim]=[];if(answers[q.id])ds[q.dim].push(answers[q.id]);}const up={};for(const dim of DIM_ORDER){const vals=ds[dim]||[2];const avg=vals.reduce((a,b)=>a+b,0)/vals.length;const r=Math.round(avg);up[dim]=r<=1?'L':r>=3?'H':'M';}let best=null,bd=999;for(const t of NORMAL_TYPES){const pa=t.pattern.replace(/-/g,'').split('');let d=0;DIM_ORDER.forEach((dim,i)=>{if(up[dim]!==pa[i])d++;});if(d<bd){bd=d;best=t;}}showResult(TYPE_LIBRARY[best.code]||{code:best.code,cn:'?',intro:'?',descOther:'?',descSelf:'?'},up);}
+function showResult(type,up){submitResult(type.code,type.cn,up,answers);const ih=type.code==='NARC';const perspLabel=perspective==='other'?'💘 恋爱人格鉴定结果':'🪞 自我审视结果';const bh=ih?`<div class="hidden-badge">💀 隐藏人格解锁</div>`:`<div class="result-badge">${perspLabel}</div>`;const desc=perspective==='other'?(type.descOther||''):(type.descSelf||'');let dh='';if(up){dh=`<div class="dims-title">📊 15维度画像</div><div class="dims-grid">${DIM_ORDER.map(dim=>{const s=up[dim]||'M';const l=s==='H'?'高':s==='L'?'低':'中';return`<div class="dim-item"><div class="dim-name">${DIM_META[dim]?.name||dim}</div><div class="dim-bar-bg"><div class="dim-bar ${s}"></div></div><div class="dim-score ${s}">${l}</div></div>`;}).join('')}</div>`;}document.getElementById('result-content').innerHTML=`${bh}<div class="result-code ${ih?'hidden-type':''}">${type.code}</div><div class="result-cn">${type.cn}</div><div class="result-intro">${type.intro}</div><div class="result-desc">${desc}</div>${dh}<div class="result-actions"><button class="btn-primary" onclick="startTest()">重新鉴定</button><button class="btn-secondary" onclick="showScreen('intro')">返回首页</button></div>`;showScreen('result');}
+</script>
+</body>
+</html>

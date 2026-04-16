@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>人格鉴定系列</title>
+  <style>
+    :root{--radius:24px;}
+    *{box-sizing:border-box;}html,body{margin:0;padding:0;}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:#f8f8f8;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
+    .hero{text-align:center;margin-bottom:40px;}
+    .hero h1{font-size:clamp(28px,5vw,52px);font-weight:900;letter-spacing:-.03em;margin:0 0 12px;}
+    .hero p{color:#666;font-size:16px;margin:0;}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;max-width:960px;width:100%;}
+    .card{background:#fff;border-radius:var(--radius);padding:32px 28px;text-decoration:none;color:inherit;border:2px solid transparent;transition:transform .2s,box-shadow .2s,border-color .2s;box-shadow:0 4px 24px rgba(0,0,0,0.06);}
+    .card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,0.12);}
+    .card-emoji{font-size:48px;margin-bottom:16px;display:block;}
+    .card-badge{font-size:11px;font-weight:800;letter-spacing:.1em;padding:4px 12px;border-radius:999px;display:inline-block;margin-bottom:12px;}
+    .card-title{font-size:22px;font-weight:900;margin:0 0 8px;}
+    .card-sub{font-size:13px;color:#888;margin:0 0 20px;line-height:1.6;}
+    .card-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;padding:10px 20px;border-radius:12px;color:#fff;}
+    .card-link{display:block;font-size:12px;color:#aaa;margin-top:10px;text-decoration:underline;}
+    .ppti{border-color:#fde8d8;}.ppti:hover{border-color:#c2410c;}
+    .ppti .card-badge{background:#fde8d8;color:#9a3412;}
+    .ppti .card-btn{background:#c2410c;}
+    .lpti{border-color:#fce7f3;}.lpti:hover{border-color:#be185d;}
+    .lpti .card-badge{background:#fce7f3;color:#9d174d;}
+    .lpti .card-btn{background:#be185d;}
+    .fbti{border-color:#dcfce7;}.fbti:hover{border-color:#065f46;}
+    .fbti .card-badge{background:#dcfce7;color:#065f46;}
+    .fbti .card-btn{background:#065f46;}
+    .footer{margin-top:40px;color:#aaa;font-size:13px;text-align:center;}
+    @media(max-width:600px){.grid{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <h1>🔬 人格鉴定系列</h1>
+    <p>测完别哭，哭也没用。娱乐向，请勿当真。</p>
+  </div>
+  <div class="grid">
+    <a class="card ppti" href="/ppti/">
+      <span class="card-emoji">👨‍👩‍👧</span>
+      <span class="card-badge">PPTI</span>
+      <div class="card-title">父母人格鉴定</div>
+      <div class="card-sub">你的父母是哪种类型？<br>20种父母人格 · 30道题 · 5分钟</div>
+      <div class="card-btn">开始鉴定父母 →</div>
+      <div class="card-link">查看全部人格图鉴 →</div>
+    </a>
+    <a class="card lpti" href="/lpti/">
+      <span class="card-emoji">💘</span>
+      <span class="card-badge">LPTI</span>
+      <div class="card-title">恋爱人格鉴定</div>
+      <div class="card-sub">你的另一半是哪种类型？<br>20种恋爱人格 · 30道题 · 5分钟</div>
+      <div class="card-btn">开始鉴定恋人 →</div>
+      <div class="card-link">查看全部人格图鉴 →</div>
+    </a>
+    <a class="card fbti" href="/fbti/">
+      <span class="card-emoji">🤝</span>
+      <span class="card-badge">FBTI</span>
+      <div class="card-title">朋友人格鉴定</div>
+      <div class="card-sub">你的朋友是哪种类型？<br>20种朋友人格 · 30道题 · 5分钟</div>
+      <div class="card-btn">开始鉴定朋友 →</div>
+      <div class="card-link">查看全部人格图鉴 →</div>
+    </a>
+  </div>
+  <div class="footer">娱乐向测评 · 纯前端计算 · 不上传任何数据</div>
+  <script>
+    // 点击图鉴链接
+    document.querySelectorAll('.card-link').forEach((el, i) => {
+      const paths = ['/ppti/types.html', '/lpti/types.html', '/fbti/types.html'];
+      el.href = paths[i];
+      el.onclick = e => e.stopPropagation();
+    });
+  </script>
+</body>
+</html>

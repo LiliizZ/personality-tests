@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FBTI 人格图鉴 · 20种朋友人格</title>
+  <style>
+    :root{--panel:#ffffff;--text:#0a1a0e;--muted:#4a7a58;--line:#d1e8d8;--soft:#dcfce7;--accent:#065f46;--accent-strong:#047857;--radius:20px;--shadow:0 8px 32px rgba(6,95,70,0.08);}
+    *{box-sizing:border-box;}html,body{margin:0;padding:0;}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:radial-gradient(circle at top left,#d1fae5 0,#f0fdf4 40%,#f5fff8 100%);color:var(--text);min-height:100vh;}
+    .shell{max-width:1100px;margin:0 auto;padding:32px 16px 64px;}
+    .hero{text-align:center;padding:48px 24px 40px;background:var(--panel);border-radius:var(--radius);border:1px solid var(--line);box-shadow:var(--shadow);margin-bottom:32px;position:relative;overflow:hidden;}
+    .hero::before{content:"";position:absolute;top:-80px;right:-80px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(6,95,70,0.12),transparent 70%);pointer-events:none;}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--accent);border:1px solid var(--line);background:var(--soft);border-radius:999px;padding:6px 14px;margin-bottom:16px;}
+    .hero h1{font-size:clamp(28px,5vw,48px);font-weight:900;letter-spacing:-.03em;margin:0 0 12px;}
+    .hero p{color:var(--muted);font-size:15px;margin:0 0 24px;line-height:1.7;}
+    .hero-stats{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;}
+    .stat-item{text-align:center;}.stat-num{font-size:28px;font-weight:900;color:var(--accent-strong);}.stat-label{font-size:12px;color:var(--muted);margin-top:2px;}
+    .btn-test{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;padding:12px 24px;border-radius:14px;text-decoration:none;font-weight:700;font-size:14px;margin-top:20px;box-shadow:0 8px 24px rgba(6,95,70,0.25);transition:transform .15s;}
+    .btn-test:hover{transform:translateY(-2px);}
+    .filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;align-items:center;}
+    .filter-btn{padding:7px 16px;border-radius:999px;font-size:13px;font-weight:600;border:1.5px solid var(--line);background:var(--panel);color:var(--muted);cursor:pointer;transition:all .15s;}
+    .filter-btn:hover,.filter-btn.active{border-color:var(--accent-strong);background:var(--soft);color:var(--accent);}
+    .filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;}
+    .type-card{background:var(--panel);border:1.5px solid var(--line);border-radius:var(--radius);padding:0;box-shadow:var(--shadow);overflow:hidden;transition:transform .2s,box-shadow .2s,border-color .2s;}
+    .type-card:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(6,95,70,0.13);border-color:var(--accent-strong);}
+    .type-card.hidden-card{border-color:#dc2626;}.type-card.hidden-card:hover{box-shadow:0 16px 40px rgba(220,38,38,0.15);}
+    .card-header{padding:20px 20px 16px;background:linear-gradient(135deg,var(--soft),#fff);border-bottom:1px solid var(--line);display:flex;align-items:flex-start;gap:14px;}
+    .type-card.hidden-card .card-header{background:linear-gradient(135deg,#fff1f1,#fff);}
+    .card-emoji{font-size:32px;line-height:1;flex-shrink:0;margin-top:2px;}
+    .card-title{flex:1;}
+    .card-code{font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--accent);background:var(--soft);padding:3px 10px;border-radius:999px;display:inline-block;margin-bottom:6px;}
+    .type-card.hidden-card .card-code{color:#dc2626;background:#fff1f1;}
+    .card-cn{font-size:18px;font-weight:800;margin:0 0 4px;}.card-intro{font-size:13px;color:var(--muted);margin:0;line-height:1.5;}
+    .card-body{padding:16px 20px 20px;}
+    .card-desc{font-size:13px;line-height:1.75;color:#3d3d50;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:14px;}
+    .type-card.expanded .card-desc{-webkit-line-clamp:unset;overflow:visible;}
+    .pattern-wrap{margin-bottom:12px;}.pattern-label{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:.05em;}
+    .pattern-dims{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
+    .dim-group-label{font-size:9px;color:var(--muted);text-align:center;margin-bottom:4px;}
+    .dim-bars{display:flex;gap:3px;justify-content:center;}
+    .dim-dot{width:14px;height:14px;border-radius:4px;font-size:8px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;}
+    .dim-dot.H{background:#059669;}.dim-dot.M{background:#d97706;}.dim-dot.L{background:#dc2626;}
+    .card-footer{display:flex;justify-content:space-between;align-items:center;}
+    .expand-btn{font-size:12px;color:var(--accent);font-weight:600;background:none;border:none;cursor:pointer;padding:0;}
+    .expand-btn:hover{text-decoration:underline;}
+    .hidden-badge{font-size:11px;font-weight:700;color:#dc2626;background:#fff1f1;border:1px solid #fecaca;padding:3px 10px;border-radius:999px;}
+    .search-wrap{position:relative;margin-bottom:20px;}
+    .search-input{width:100%;padding:12px 16px 12px 40px;border:1.5px solid var(--line);border-radius:14px;font-size:14px;background:var(--panel);color:var(--text);outline:none;transition:border-color .15s;}
+    .search-input:focus{border-color:var(--accent-strong);}
+    .search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:16px;pointer-events:none;}
+    .no-result{text-align:center;padding:48px;color:var(--muted);font-size:15px;}
+    @media(max-width:600px){.grid{grid-template-columns:1fr;}.hero-stats{gap:20px;}}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <div class="hero">
+    <div class="eyebrow">🤝 FBTI 朋友人格图鉴</div>
+    <h1>20种朋友人格<br>你的朋友是哪种？</h1>
+    <p>30道题 · 5大模型 · 15个维度 · 娱乐向，请勿当真</p>
+    <div class="hero-stats">
+      <div class="stat-item"><div class="stat-num">19</div><div class="stat-label">普通人格</div></div>
+      <div class="stat-item"><div class="stat-num">1</div><div class="stat-label">隐藏人格</div></div>
+      <div class="stat-item"><div class="stat-num">30</div><div class="stat-label">测评题目</div></div>
+      <div class="stat-item"><div class="stat-num" id="total-count">-</div><div class="stat-label">已测评人数</div></div>
+    </div>
+    <a class="btn-test" href="/">开始鉴定朋友 →</a>
+  </div>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" type="text" placeholder="搜索人格名称或关键词…" id="search-input" oninput="renderGrid()">
+  </div>
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="setFilter('all',this)">全部 (20)</button>
+    <button class="filter-btn" onclick="setFilter('absent',this)">情感缺席</button>
+    <button class="filter-btn" onclick="setFilter('taker',this)">单向索取</button>
+    <button class="filter-btn" onclick="setFilter('toxic',this)">有点毒</button>
+    <button class="filter-btn" onclick="setFilter('good',this)">好朋友 ✅</button>
+    <button class="filter-btn" onclick="setFilter('hidden',this)">隐藏人格 💀</button>
+  </div>
+  <div class="grid" id="card-grid"></div>
+  <div class="no-result" id="no-result" style="display:none">没有找到匹配的人格 🤔</div>
+</div>
+<script>
+const TYPES=[
+  {code:'GHOST',cn:'消失的朋友',emoji:'👻',intro:'"最近太忙了，改天"',tags:['absent'],pattern:'LLL-LLL-LLM-LLL-LLL',desc:'你的朋友测出了「消失的朋友」。"改天"是他/她最常用的两个字，但那个"天"从来没有到来过。他/她上次主动联系你，可能要追溯到去年的某个节日。他/她不是坏人，只是消失了。生活、工作、另一半、孩子——总有更紧迫的事情。你一开始还会主动找他/她，后来慢慢也不找了，因为找了也没用。有一天你会发现，他/她还在，但那份熟悉已经不在了。友谊不是存款，不会一直在那里等你取。'},
+  {code:'VENT',cn:'情绪垃圾桶使用者',emoji:'🗑️',intro:'"只有你懂我"',tags:['taker'],pattern:'LLM-LHL-LLM-LLH-LLL',desc:'你的朋友测出了「情绪垃圾桶使用者」。每次见面或者打电话，都是他/她在说，你在听。他/她讲工作的烦恼、家里的事、对象的问题，讲了两个小时，然后说"好多了，谢谢你，你真的太懂我了"，然后挂电话，然后继续过日子。他/她觉得这是友谊，这是信任。但你有没有想过：你也有烦恼，也有想说的话，只是每次都没有机会说，因为他/她已经占满了所有的时间。单向的倾倒不是友谊，是使用。'},
+  {code:'COMP',cn:'暗中较劲型',emoji:'🏆',intro:'"哇你好厉害（内心：凭什么）"',tags:['toxic'],pattern:'MLM-MML-MLM-LLM-LHL',desc:'你的朋友测出了「暗中较劲型」。他/她和你的关系里，有一个隐藏的排行榜，而且他/她一直在偷偷更新它。你升职了——他/她心里算了一下；你买房了——他/她心里想，我什么时候能买；你晒了旅行照——他/她心里有点酸，虽然嘴上说"好羡慕"。他/她不是坏人，嫉妒是人类最正常的情绪之一。问题是，他/她没有处理这个情绪，只是把它压下去，然后用"哇好厉害"的表情掩盖。'},
+  {code:'LOYAL',cn:'死忠型朋友',emoji:'🛡️',intro:'"我永远站你"',tags:['good'],pattern:'HHH-HLM-HHH-MHH-HLM',desc:'你的朋友测出了「死忠型朋友」。他/她是那种半夜三点接到你电话会立刻接的人。你失恋了，他/她会出现；你被人欺负了，他/她会冲出来；你有喜事，他/她是第一个知道的。他/她记得你说过的每一件重要的事，下次见面会问"上次你说的那个事怎么样了"。这是一种很珍贵的品质，珍贵到现在越来越少见。但真正的朋友，不只是永远站在你那边，而是在你真的做错了的时候，也能说出来。'},
+  {code:'EXPO',cn:'八卦传播机',emoji:'📡',intro:'"就告诉你一个人"',tags:['toxic'],pattern:'HHM-HLM-LLL-LLM-LLM',desc:'你的朋友测出了「八卦传播机」。"就告诉你一个人"是他/她最常说的谎话。他/她的意思是：在告诉你之前，已经告诉了三个人，而且每次都说"就告诉你一个人"。他/她不是故意要害人，只是管不住嘴。你告诉他/她的秘密，他/她觉得告诉另一个朋友没关系，因为你们不认识。但那些秘密是真实的，你是真实的，你信任他/她，把自己最脆弱的部分告诉了他/她。保密不是一种天赋，是一种选择。'},
+  {code:'CRIT',cn:'嘴毒型朋友',emoji:'🗡️',intro:'"我是为你好才说实话"',tags:['toxic'],pattern:'MML-MML-MHH-HML-MLM',desc:'你的朋友测出了「嘴毒型朋友」。他/她以"真朋友才说实话"为荣，觉得那些只会说好话的朋友是虚伪的，而他/她，是那个敢于说真话的人。问题是：他/她的"真话"和"实话"之间，有时候有一段距离。他/她说的是事实，但方式让你感觉是在被评判，而不是被关心。"为你好"是一个很容易被滥用的理由。真正为朋友好，是先问"你现在需要什么"，再决定说什么。'},
+  {code:'FAIR',cn:'公平账本型',emoji:'⚖️',intro:'"上次是你请的，这次我来"',tags:[],pattern:'MLM-HHH-MLH-MLM-MLM',desc:'你的朋友测出了「公平账本型」。他/她的脑子里有一本账，记录着这段友谊里每一次的付出和接受。上次谁请客，上次谁先联系，上次谁帮了谁，这些他/她都记着，而且会在心里保持平衡。这不完全是坏事——有些人完全不记账，然后一直被占便宜。但如果账记得太精细，友谊就变成了一场交易。真正的友谊有时候是不平衡的，是人生不同阶段的自然流动。'},
+  {code:'NEED',cn:'永远需要帮助型',emoji:'🆘',intro:'"你是我唯一能找的人"',tags:['taker'],pattern:'LLM-LHH-LLM-LLH-LLM',desc:'你的朋友测出了「永远需要帮助型」。他/她的生活里总有事情需要处理，而他/她总是需要你来帮。单独来看每一件都不过分。问题是，它们加在一起，变成了一种持续的、不间断的需求。你开始接到他/她的电话会有点心跳加速，因为又有事了。你爱他/她，但你也累了。"你是我唯一能找的人"是一句很重的话，它把你变成了一个没有退路的人。友谊不是一个无限额的账户。'},
+  {code:'COOL',cn:'佛系朋友',emoji:'🧘',intro:'"随缘，有缘自会相聚"',tags:['absent'],pattern:'LML-LLM-MLH-LML-MLL',desc:'你的朋友测出了「佛系朋友」。他/她对友谊有一种超然的态度：缘分到了就在一起，缘分尽了就分开，不强求，不执着，随缘。他/她觉得这是一种成熟，是一种看透了的洒脱。但有时候，"随缘"是一种懒惰的掩护。真正的友谊需要主动，需要付出，需要在不方便的时候也选择出现。他/她可能有很多"随缘"的朋友，但真正深的、在关键时刻会出现的朋友，可能寥寥无几。'},
+  {code:'GROW',cn:'成长型朋友',emoji:'🌟',intro:'"你最近变化好大，真好"',tags:['good'],pattern:'HHH-HHH-HHH-HHH-HHH',desc:'你的朋友测出了「成长型朋友」。他/她是那种让你感觉"和他/她在一起我也想变得更好"的人。他/她不嫉妒你的成功，真心为你高兴；他/她记得你说过的事，会在适当的时候问起；他/她在你需要的时候出现，在你不需要的时候也不消失；他/她说真话，但知道怎么说真话不伤人。他/她把你的成长当成自己的事，因为他/她知道：好朋友之间的关系是正和游戏，不是零和游戏。'},
+  {code:'SURF',cn:'表面型朋友',emoji:'🏄',intro:'"我们关系可好了"',tags:['absent'],pattern:'MLL-LLL-LLM-LLL-LLL',desc:'你的朋友测出了「表面型朋友」。他/她有很多朋友，或者说，有很多"朋友"。朋友圈里经常有人给他/她点赞，聚会时认识很多人。但如果有一天他/她真的遇到了麻烦，能打电话的人有几个？能在半夜接电话的有几个？表面型朋友不是坏人，只是浅层的。你们在欢乐的时候在一起，在困难的时候各自散去。如果他/她把这种关系当成深厚的友谊，在真正需要的时候会感到孤独。'},
+  {code:'ENVY',cn:'嫉妒型朋友',emoji:'😒',intro:'"你运气真好"',tags:['toxic'],pattern:'MLM-MML-MLM-LLM-LLL',desc:'你的朋友测出了「嫉妒型朋友」。"你运气真好"是他/她最常说的话，但意思是：你凭什么比我好？他/她把你的努力叫"运气"，把你的成功叫"时机好"，把你的幸福叫"命好"。这样，他/她就不用面对一个可能更难受的真相：也许你做了什么他/她没做的事。他/她的嫉妒已经影响了对你的态度——开始在背后说一些小话，在你成功时找一些"但是"，不太愿意真心祝贺。你的朋友可能感觉到了，但说不清楚，只是觉得和他/她在一起有点不舒服。'},
+  {code:'ROCK',cn:'磐石型朋友',emoji:'🪨',intro:'"不管什么时候，我都在"',tags:['good'],pattern:'HHH-HHH-HHH-HHH-HHH',desc:'你的朋友测出了「磐石型朋友」。他/她是那种十年不见，见面了还是当年那个人的朋友。他/她是那种在你最糟糕的时候出现的人，不是因为有义务，而是因为想。他/她的友谊经得起时间，经得起距离，经得起各自的变化。你换了工作、换了城市、换了生活方式，他/她不会觉得"我们越来越不同了"，他/她会觉得"我很想了解现在的你"。如果你的朋友们知道这个测评结果，他们会说：是的，就是这样。'},
+  {code:'SOLO',cn:'独行侠朋友',emoji:'🎭',intro:'"我这个人不太需要朋友"',tags:['absent'],pattern:'LLL-LLL-MLL-LLL-LMM',desc:'你的朋友测出了「独行侠朋友」。他/她不是讨厌你，他/她只是真的不太需要社交。他/她可以一个月不联系任何人，然后突然出现，好像什么都没发生。他/她不是在冷落你，他/她的世界里就是没有"定期联系"这个概念。问题是：友谊是需要两个人都投入的。他/她可以自给自足，但你在这段友谊里可能一直处于等待的那一方。等一个不需要你的人，是一件很累的事。'},
+  {code:'COPY',cn:'跟风型朋友',emoji:'🪆',intro:'"你喜欢什么我就喜欢什么"',tags:[],pattern:'LMH-MHM-LMM-LMM-LMH',desc:'你的朋友测出了「跟风型朋友」。他/她和你在一起时，会慢慢变成你的镜像。你喜欢某个品牌，他/她开始买；你开始健身，他/她也报了同一家健身房；你换了发型，他/她下周也剪了。他/她不是在抄你，他/她只是太需要认同，需要通过和你一样来感受连接。单独来看这不是坏事，但时间长了你会发现：他/她没有自己的立场，在你们意见不同的时候，他/她会本能地站到你那边，而不是说出真实的想法。'},
+  {code:'DRAMA',cn:'戏精型朋友',emoji:'🎬',intro:'"你不知道我经历了什么"',tags:['taker'],pattern:'LLM-LHL-LLM-LLH-LLM',desc:'你的朋友测出了「戏精型朋友」。他/她的生活永远比别人戏剧性——每一件事都是"最难的一次"，每一段感情都是"前所未有的伤"，每一次工作上的事都是"不可思议的不公平"。你开始对他/她的"危机"产生免疫，因为危机太多了，每一个都是最高级别的。他/她不是在撒谎，他/她真的感受到了那些情绪。但他/她把所有情绪都放大到了最大音量，久而久之，你不知道什么时候该认真，什么时候该当背景音乐。'},
+  {code:'COND',cn:'有条件的朋友',emoji:'🎫',intro:'"你对我有用我才联系你"',tags:['taker'],pattern:'LLM-HLM-LLM-LLM-LLM',desc:'你的朋友测出了「有条件的朋友」。他/她联系你，通常是有事的时候。需要帮忙——找你；需要资源——找你；需要倾诉——找你。但当你需要他/她的时候，他/她很忙，或者很快就结束了话题。你开始注意到一个规律：他/她出现的时间点，总是和他/她的需求高度重合。这不是友谊，这是一种功能性的使用关系。你在他/她的通讯录里，是一个工具，而不是一个人。'},
+  {code:'HIST',cn:'活在过去型',emoji:'📼',intro:'"我们当年多好啊"',tags:[],pattern:'LLL-MLL-HLL-LLL-LLL',desc:'你的朋友测出了「活在过去型」。他/她总是在说"我们当年"——当年多好玩，当年多亲密，当年那件事多有趣。他/她活在一段已经结束的友谊的记忆里，用过去的温度来衡量现在的关系。问题是：你们都变了，那段"当年"已经不在了，而他/她拒绝承认这一点。他/她不是不爱现在的你，他/她只是更爱那个已经不存在的过去的你。这种执念让你们的关系停在了原地，没办法往前走。'},
+  {code:'ECHO',cn:'回声型朋友',emoji:'🔊',intro:'"你说得对，完全正确"',tags:[],pattern:'LMH-MHM-LMM-LMM-LMH',desc:'你的朋友测出了「回声型朋友」。他/她永远同意你。你说什么，他/她说"对"；你抱怨谁，他/她说"你说得对"；你做了一个可能不太好的决定，他/她说"你肯定想清楚了"。这听起来很舒服，但有一个问题：你需要的不只是认同，你需要一个真实的人。当你真的做错了，他/她不会告诉你；当你需要另一个视角，他/她给不了。回声型朋友让你感觉很好，但感觉好和真的好，是两回事。'},
+  {code:'PARA',cn:'情感寄生者',emoji:'💀',intro:'"我不行了，只有你能帮我"',tags:['hidden'],hidden:true,pattern:'隐藏触发',desc:'你的朋友测出了「情感寄生者」。这个结果需要你认真对待。他/她在友谊里的模式是：需要时出现，不需要时消失；接受你的帮助，但很少主动付出；用"只有你能帮我"把你变成一个没有退路的人。你的朋友可能已经很累了，但因为他/她说"我不行了"，你没办法拒绝。这种无法拒绝，不是友谊，是绑架——情感上的绑架。你可以爱他/她，但你也可以设立边界。"我爱你，但我现在没有能力帮你"是一句可以说出口的话。'},
+];
+const GROUP_LABELS=['投入','互惠','信任','冲突','成长'];
+let currentFilter='all',expandedCards=new Set();
+function parsePattern(p){if(p==='隐藏触发')return null;return p.replace(/-/g,'').split('');}
+function renderPatternDots(p){const vals=parsePattern(p);if(!vals)return`<div style="font-size:12px;color:#dc2626;font-weight:700;padding:4px 0">🔒 隐藏触发条件</div>`;const groups=[[0,1,2],[3,4,5],[6,7,8],[9,10,11],[12,13,14]];return`<div class="pattern-dims">${groups.map((g,gi)=>`<div class="dim-group"><div class="dim-group-label">${GROUP_LABELS[gi]}</div><div class="dim-bars">${g.map(i=>`<div class="dim-dot ${vals[i]}">${vals[i]}</div>`).join('')}</div></div>`).join('')}</div>`;}
+function renderCard(t){const ie=expandedCards.has(t.code);return`<div class="type-card ${t.hidden?'hidden-card':''} ${ie?'expanded':''}" id="card-${t.code}"><div class="card-header"><div class="card-emoji">${t.emoji}</div><div class="card-title"><div class="card-code">${t.code}</div><div class="card-cn">${t.cn}</div><p class="card-intro">${t.intro}</p></div></div><div class="card-body"><div class="card-desc">${t.desc}</div><div class="pattern-wrap"><div class="pattern-label">维度画像</div>${renderPatternDots(t.pattern)}</div><div class="card-footer"><button class="expand-btn" onclick="toggleExpand('${t.code}')">${ie?'收起 ↑':'展开全文 ↓'}</button>${t.hidden?'<span class="hidden-badge">💀 隐藏人格</span>':''}</div></div></div>`;}
+function renderGrid(){const q=document.getElementById('search-input').value.toLowerCase();const filtered=TYPES.filter(t=>{const mf=currentFilter==='all'||t.tags.includes(currentFilter);const ms=!q||t.code.toLowerCase().includes(q)||t.cn.includes(q)||t.intro.includes(q)||t.desc.includes(q);return mf&&ms;});const g=document.getElementById('card-grid');const nr=document.getElementById('no-result');if(filtered.length===0){g.innerHTML='';nr.style.display='block';}else{nr.style.display='none';g.innerHTML=filtered.map(renderCard).join('');}}
+function toggleExpand(code){if(expandedCards.has(code))expandedCards.delete(code);else expandedCards.add(code);renderGrid();setTimeout(()=>{const el=document.getElementById('card-'+code);if(el)el.scrollIntoView({behavior:'smooth',block:'nearest'});},50);}
+function setFilter(tag,btn){currentFilter=tag;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderGrid();}
+async function loadStats(){try{const r=await fetch('/api/fbti/stats');const d=await r.json();document.getElementById('total-count').textContent=d.total>0?d.total.toLocaleString():'0';}catch(e){document.getElementById('total-count').textContent='-';}}
+renderGrid();loadStats();
+</script>
+</body>
+</html>

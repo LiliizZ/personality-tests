@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FBTI 朋友人格鉴定</title>
+  <style>
+    :root { --panel:#ffffff;--text:#0a1a0e;--muted:#4a7a58;--line:#d1e8d8;--soft:#dcfce7;--accent:#065f46;--accent-strong:#047857;--shadow:0 16px 40px rgba(6,95,70,0.10);--radius:22px; }
+    *{box-sizing:border-box;}html,body{margin:0;padding:0;}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:radial-gradient(circle at top left,#d1fae5 0,#f0fdf4 40%,#f5fff8 100%);color:var(--text);min-height:100vh;}
+    .shell{max-width:980px;margin:0 auto;padding:24px 16px 56px;}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);}
+    .hero{padding:32px;margin-top:20px;position:relative;overflow:hidden;}
+    .hero::after{content:"";position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;background:linear-gradient(180deg,rgba(6,95,70,0.12),rgba(4,120,87,0.05));pointer-events:none;}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--accent);border:1px solid var(--line);background:var(--soft);border-radius:999px;padding:8px 14px;margin-bottom:18px;}
+    h1,h2,h3,p{margin:0;}
+    .hero h1{font-size:clamp(28px,5vw,52px);line-height:1.08;letter-spacing:-0.03em;max-width:680px;}
+    .hero .sub{margin-top:14px;color:var(--muted);font-size:15px;line-height:1.75;max-width:720px;}
+    .hero-grid{display:grid;grid-template-columns:1.3fr 0.9fr;gap:18px;align-items:stretch;margin-top:24px;}
+    @media(max-width:600px){.hero-grid{grid-template-columns:1fr;}}
+    .mini-panel{padding:18px;border-radius:18px;border:1px solid var(--line);background:linear-gradient(180deg,#f0fdf4,#dcfce7);}
+    .mini-panel h3{font-size:15px;margin-bottom:10px;}
+    .mini-panel ul{margin:0;padding-left:18px;color:var(--muted);line-height:1.8;font-size:14px;}
+    button{border:0;cursor:pointer;transition:transform .16s ease,opacity .16s ease;font:inherit;}
+    button:hover{transform:translateY(-1px);}
+    button:disabled{cursor:not-allowed;opacity:0.55;transform:none;}
+    .btn-primary{background:var(--accent);color:#fff;padding:14px 24px;border-radius:14px;box-shadow:0 12px 30px rgba(6,95,70,0.22);font-weight:700;font-size:15px;}
+    .btn-secondary{background:#fff;color:var(--accent);padding:14px 24px;border-radius:14px;border:1px solid var(--line);font-weight:700;font-size:15px;}
+    .perspective-picker{display:flex;gap:12px;margin:20px 0 4px;flex-wrap:wrap;}
+    .persp-btn{flex:1;min-width:200px;padding:16px 20px;border-radius:16px;border:2px solid var(--line);background:#fff;text-align:left;cursor:pointer;transition:all .15s ease;}
+    .persp-btn:hover{border-color:var(--accent-strong);background:var(--soft);transform:translateY(-2px);}
+    .persp-btn.active{border-color:var(--accent);background:var(--soft);box-shadow:0 4px 16px rgba(6,95,70,0.15);}
+    .persp-btn .persp-icon{font-size:28px;margin-bottom:8px;display:block;}
+    .persp-btn .persp-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;}
+    .persp-btn .persp-desc{font-size:13px;color:var(--muted);line-height:1.5;}
+    .persp-btn.active .persp-title{color:var(--accent);}
+    .start-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px;align-items:center;}
+    .screen{display:none;}.screen.active{display:block;}
+    .test-wrap{padding:22px;}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:18px;flex-wrap:wrap;}
+    .progress{flex:1;min-width:240px;height:10px;background:#bbf7d0;border-radius:999px;overflow:hidden;}
+    .progress>span{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#10b981);border-radius:999px;transition:width .3s ease;}
+    .progress-label{font-size:13px;color:var(--muted);white-space:nowrap;}
+    .persp-tag{font-size:11px;font-weight:700;color:var(--accent);background:var(--soft);border-radius:999px;padding:4px 12px;border:1px solid var(--line);}
+    .q-card{padding:28px 28px 22px;}
+    .q-dim{display:inline-block;font-size:11px;font-weight:700;color:var(--accent);background:var(--soft);border-radius:999px;padding:4px 12px;margin-bottom:14px;letter-spacing:.05em;}
+    .q-text{font-size:18px;font-weight:700;line-height:1.55;margin-bottom:22px;}
+    .options{display:flex;flex-direction:column;gap:10px;}
+    .opt-btn{text-align:left;background:var(--soft);border:2px solid transparent;border-radius:14px;padding:14px 18px;font-size:14px;line-height:1.5;color:var(--text);transition:all .15s ease;}
+    .opt-btn:hover{border-color:var(--accent-strong);background:#bbf7d0;transform:translateX(4px);}
+    .opt-btn.selected{border-color:var(--accent);background:#bbf7d0;font-weight:600;}
+    .nav-row{display:flex;justify-content:space-between;align-items:center;padding:16px 28px 22px;gap:12px;}
+    .result-wrap{padding:28px;}
+    .result-badge{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--accent),#10b981);color:#fff;border-radius:999px;padding:8px 20px;font-size:12px;font-weight:700;letter-spacing:.08em;margin-bottom:18px;}
+    .result-code{font-size:clamp(40px,8vw,72px);font-weight:900;letter-spacing:-.03em;line-height:1;}
+    .result-cn{font-size:22px;font-weight:700;color:var(--muted);margin-top:6px;}
+    .result-intro{font-size:18px;font-weight:700;color:var(--accent);margin:16px 0;padding:16px 20px;background:var(--soft);border-radius:14px;border-left:4px solid var(--accent);}
+    .result-desc{font-size:15px;line-height:1.85;color:#2d2d3a;margin-bottom:24px;}
+    .dims-title{font-size:14px;font-weight:700;color:var(--muted);margin-bottom:14px;letter-spacing:.05em;}
+    .dims-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px;}
+    @media(max-width:600px){.dims-grid{grid-template-columns:1fr 1fr;}}
+    .dim-item{background:var(--soft);border-radius:12px;padding:12px 14px;}
+    .dim-item .dim-name{font-size:11px;color:var(--muted);margin-bottom:6px;}
+    .dim-bar-bg{height:6px;background:#a7f3d0;border-radius:999px;overflow:hidden;}
+    .dim-bar{height:100%;border-radius:999px;transition:width .5s ease;}
+    .dim-bar.L{background:#f87171;width:20%;}.dim-bar.M{background:#fbbf24;width:55%;}.dim-bar.H{background:#34d399;width:90%;}
+    .dim-score{font-size:12px;font-weight:700;margin-top:5px;}
+    .dim-score.L{color:#dc2626;}.dim-score.M{color:#d97706;}.dim-score.H{color:#059669;}
+    .result-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;}
+    .hidden-badge{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#dc2626,#065f46);color:#fff;border-radius:999px;padding:8px 20px;font-size:12px;font-weight:700;letter-spacing:.08em;margin-bottom:18px;}
+    .result-code.hidden-type{color:#dc2626;}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <div id="intro" class="screen active">
+    <div class="card hero">
+      <div class="eyebrow">🤝 FBTI 朋友人格鉴定</div>
+      <h1>朋友人格，一测见真章</h1>
+      <p class="sub">30道题，5大模型，15个维度，13种人格。<br>可以鉴定你的朋友，也可以审视你自己。</p>
+      <div class="hero-grid">
+        <div class="mini-panel">
+          <h3>🔬 五大分析模型</h3>
+          <ul>
+            <li>I 投入模型 — 主动度 / 出现率 / 记忆力</li>
+            <li>R 互惠模型 — 给予意愿 / 索取意识 / 平衡感</li>
+            <li>T 信任模型 — 保密度 / 诚实度 / 稳定性</li>
+            <li>C 冲突模型 — 直面能力 / 宽容度 / 修复意愿</li>
+            <li>G 成长模型 — 成长支持 / 嫉妒处理 / 关系进化</li>
+          </ul>
+        </div>
+        <div class="mini-panel">
+          <h3>📋 关于测试</h3>
+          <ul>
+            <li>共 30 道题，约 5 分钟</li>
+            <li>13 种人格类型（含隐藏）</li>
+            <li>纯本地计算，不上传数据</li>
+            <li>仅供娱乐，请勿对号入座</li>
+          </ul>
+        </div>
+      </div>
+      <div style="margin-top:24px;">
+        <div style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:10px;letter-spacing:.05em;">选择测评视角</div>
+        <div class="perspective-picker">
+          <button class="persp-btn active" id="persp-other" onclick="setPerspective('other')">
+            <span class="persp-icon">🔍</span>
+            <div class="persp-title">鉴定我的朋友</div>
+            <div class="persp-desc">根据朋友的行为模式，测出他/她是什么友谊人格</div>
+          </button>
+          <button class="persp-btn" id="persp-self" onclick="setPerspective('self')">
+            <span class="persp-icon">🪞</span>
+            <div class="persp-title">审视我自己</div>
+            <div class="persp-desc">测一测你是什么样的朋友</div>
+          </button>
+        </div>
+      </div>
+      <div class="start-row">
+        <button class="btn-primary" onclick="startTest()">开始测评 →</button>
+        <div id="counter" style="font-size:13px;color:var(--muted);display:none;">已有 <strong id="counter-num">0</strong> 人完成测评</div>
+      </div>
+    </div>
+  </div>
+  <div id="quiz" class="screen">
+    <div class="card" style="margin-top:20px;">
+      <div class="test-wrap">
+        <div class="topbar">
+          <div class="progress"><span id="progress-bar" style="width:0%"></span></div>
+          <div class="progress-label" id="progress-label">0 / 30</div>
+          <div class="persp-tag" id="persp-tag">鉴定朋友</div>
+        </div>
+        <div id="q-container"></div>
+        <div class="nav-row">
+          <button class="btn-secondary" id="btn-prev" onclick="prevQ()" disabled>← 上一题</button>
+          <button class="btn-primary" id="btn-next" onclick="nextQ()" disabled>下一题 →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="result" class="screen">
+    <div class="card" style="margin-top:20px;"><div class="result-wrap" id="result-content"></div></div>
+  </div>
+</div>
+<script>
+const DIM_META={
+  I1:{name:'I1 主动度',model:'I 投入模型'},I2:{name:'I2 出现率',model:'I 投入模型'},I3:{name:'I3 记忆力',model:'I 投入模型'},
+  R1:{name:'R1 给予意愿',model:'R 互惠模型'},R2:{name:'R2 索取意识',model:'R 互惠模型'},R3:{name:'R3 平衡感',model:'R 互惠模型'},
+  T1:{name:'T1 保密度',model:'T 信任模型'},T2:{name:'T2 诚实度',model:'T 信任模型'},T3:{name:'T3 稳定性',model:'T 信任模型'},
+  C1:{name:'C1 直面能力',model:'C 冲突模型'},C2:{name:'C2 宽容度',model:'C 冲突模型'},C3:{name:'C3 修复意愿',model:'C 冲突模型'},
+  G1:{name:'G1 成长支持',model:'G 成长模型'},G2:{name:'G2 嫉妒处理',model:'G 成长模型'},G3:{name:'G3 关系进化',model:'G 成长模型'},
+};
+const DIM_ORDER=['I1','I2','I3','R1','R2','R3','T1','T2','T3','C1','C2','C3','G1','G2','G3'];
+
+const TYPE_LIBRARY={
+  GHOST:{code:'GHOST',cn:'消失的朋友',intro:'"最近太忙了，改天"',
+    descOther:'你的朋友测出了「消失的朋友」。"改天"是他/她最常用的两个字，但那个"天"从来没有到来过。你们的朋友列表里有几十个人，但他/她上次主动联系你，可能要追溯到去年的某个节日。他/她不是坏人，只是消失了。生活、工作、另一半、孩子——总有更紧迫的事情。你一开始还会主动找他/她，后来慢慢也不找了，因为找了也没用。有一天你会发现，他/她还在，但那份熟悉已经不在了。友谊不是存款，不会一直在那里等你取。它是一种需要持续浇水的植物。',
+    descSelf:'你测出了「消失的朋友」。"改天"是你最常用的两个字，但那个"天"从来没有到来过。你的朋友列表里有几十个人，但你上次主动联系任何一个人，可能要追溯到去年的某个节日。你不是坏人，你只是消失了。有一天你会发现，那些朋友还在，但那份熟悉已经不在了。友谊不是存款，不会一直在那里等你取。它是一种需要持续浇水的植物。'},
+  VENT:{code:'VENT',cn:'情绪垃圾桶使用者',intro:'"只有你懂我"',
+    descOther:'你的朋友测出了「情绪垃圾桶使用者」。每次见面或者打电话，都是他/她在说，你在听。他/她讲工作的烦恼、家里的事、对象的问题，讲了两个小时，然后说"好多了，谢谢你，你真的太懂我了"，然后挂电话，然后继续过日子。他/她觉得这是友谊，这是信任，这是"只有你懂我"。但你有没有想过：你也有烦恼，也有想说的话，只是每次都没有机会说，因为他/她已经占满了所有的时间。单向的倾倒不是友谊，是使用。',
+    descSelf:'你测出了「情绪垃圾桶使用者」。每次见面或者打电话，都是你在说，朋友在听。你讲工作的烦恼、家里的事、对象的问题，讲了两个小时，然后说"好多了，谢谢你，你真的太懂我了"，然后挂电话，然后继续过日子。你觉得这是友谊，这是信任。但你有没有想过：那个朋友也有烦恼，也有想说的话，只是每次都没有机会说。下次打电话，先问一句"你最近怎么样"，然后——真的听。'},
+  COMP:{code:'COMP',cn:'暗中较劲型',intro:'"哇你好厉害（内心：凭什么）"',
+    descOther:'你的朋友测出了「暗中较劲型」。他/她和你的关系里，有一个隐藏的排行榜，而且他/她一直在偷偷更新它。你升职了——他/她心里算了一下，你比他/她早了几年；你买房了——他/她心里想，我什么时候能买；你晒了旅行照——他/她心里有点酸，虽然嘴上说"好羡慕"。他/她不是坏人，嫉妒是人类最正常的情绪之一。问题是，他/她没有处理这个情绪，只是把它压下去，然后用"哇好厉害"的表情掩盖。你的成功不是在抢他/她的什么，你的好运不是他/她的损失。',
+    descSelf:'你测出了「暗中较劲型」。你和朋友的关系里，有一个隐藏的排行榜，而且你一直在偷偷更新它。朋友升职了——你心里算了一下；朋友买房了——你心里想，我什么时候能买；朋友晒了旅行照——你心里有点酸，虽然嘴上说"好羡慕"。你不是坏人，嫉妒是人类最正常的情绪之一。问题是，你没有处理这个情绪，你只是把它压下去。朋友的成功不是在抢你的什么，他们的好运不是你的损失。'},
+  LOYAL:{code:'LOYAL',cn:'死忠型朋友',intro:'"我永远站你"',
+    descOther:'你的朋友测出了「死忠型朋友」。他/她是那种半夜三点接到你电话会立刻接的人。你失恋了，他/她会出现；你被人欺负了，他/她会冲出来；你有喜事，他/她是第一个知道的。他/她记得你说过的每一件重要的事，下次见面会问"上次你说的那个事怎么样了"。这是一种很珍贵的品质。但有一点需要注意：真正的朋友，不只是永远站在你那边，而是在你真的做错了的时候，也能说出来。希望你也是同样对他/她好的朋友。',
+    descSelf:'你测出了「死忠型朋友」。你是那种半夜三点接到朋友电话会立刻接的人。朋友失恋了，你会出现；朋友被人欺负了，你会冲出来；朋友有喜事，你是第一个知道的。你记得朋友说过的每一件重要的事，下次见面会问"上次你说的那个事怎么样了"。这是一种很珍贵的品质，珍贵到现在越来越少见。但有一点需要注意：死忠不等于无条件。真正的朋友，不只是永远站在对方那边，而是在对方真的做错了的时候，也能说出来。'},
+  EXPO:{code:'EXPO',cn:'八卦传播机',intro:'"就告诉你一个人"',
+    descOther:'你的朋友测出了「八卦传播机」。"就告诉你一个人"是他/她最常说的谎话。他/她的意思是：在告诉你之前，已经告诉了三个人，而且每次都说"就告诉你一个人"。他/她不是故意要害人，只是管不住嘴。你告诉他/她的秘密，他/她觉得告诉另一个朋友没关系，因为你们不认识。但那些秘密是真实的，你是真实的，你信任他/她，把自己最脆弱的部分告诉了他/她。保密不是一种天赋，是一种选择。',
+    descSelf:'你测出了「八卦传播机」。"就告诉你一个人"是你最常说的谎话。你的意思是：在告诉这个人之前，你已经告诉了三个人。你不是故意要害人，你只是管不住嘴。朋友A的秘密，你觉得告诉朋友B没关系，因为他们不认识。但那些秘密是真实的，那些人是真实的，他们信任你，把自己最脆弱的部分告诉了你。有一天，朋友会发现自己的秘密不知怎么传出去了，他们会想到最后一个知道这件事的人——是你。保密不是一种天赋，是一种选择。'},
+  CRIT:{code:'CRIT',cn:'嘴毒型朋友',intro:'"我是为你好才说实话"',
+    descOther:'你的朋友测出了「嘴毒型朋友」。他/她以"真朋友才说实话"为荣，觉得那些只会说好话的朋友是虚伪的，而他/她，是那个敢于说真话的人。问题是：他/她的"真话"和"实话"之间，有时候有一段距离。真话是"这个方案有一个问题"，实话是"你这个方案真的很差"。他/她说的是事实，但方式让你感觉是在被评判，而不是被关心。"为你好"是一个很容易被滥用的理由，它可以为几乎所有的刻薄提供道德遮盖。真正为朋友好，是先问"你现在需要什么"，再决定说什么。',
+    descSelf:'你测出了「嘴毒型朋友」。你以"真朋友才说实话"为荣，你觉得那些只会说好话的朋友是虚伪的，而你，是那个敢于说真话的人。问题是：你的"真话"和"实话"之间，有时候有一段距离。你说的是事实，但你的方式让朋友感觉是在被评判，而不是被关心。朋友来找你，是需要支持，不是需要一个法官。真正为朋友好，是先问"你现在需要什么"，再决定说什么。'},
+  FAIR:{code:'FAIR',cn:'公平账本型',intro:'"上次是你请的，这次我来"',
+    descOther:'你的朋友测出了「公平账本型」。他/她的脑子里有一本账，记录着这段友谊里每一次的付出和接受。上次谁请客，上次谁先联系，上次谁帮了谁，这些他/她都记着，而且会在心里保持平衡。这不完全是坏事——有些人完全不记账，然后一直被占便宜。但如果账记得太精细，友谊就变成了一场交易。真正的友谊有时候是不平衡的，是人生不同阶段的自然流动。如果每次吃饭都要算清楚谁欠谁，那顿饭会很累。',
+    descSelf:'你测出了「公平账本型」。你的脑子里有一本账，记录着这段友谊里每一次的付出和接受。上次谁请客，上次谁先联系，这些你都记着。这不完全是坏事——有些人完全不记账，然后一直被占便宜。但如果账记得太精细，友谊就变成了一场交易。真正的友谊有时候是不平衡的，是人生不同阶段的自然流动。如果每次吃饭都要算清楚谁欠谁，那顿饭会很累。'},
+  NEED:{code:'NEED',cn:'永远需要帮助型',intro:'"你是我唯一能找的人"',
+    descOther:'你的朋友测出了「永远需要帮助型」。他/她的生活里总有事情需要处理，而他/她总是需要你来帮。搬家需要帮忙，找工作需要内推，难过了需要陪，开心了也需要分享——单独来看每一件都不过分。问题是，它们加在一起，变成了一种持续的、不间断的需求。你开始接到他/她的电话会有点心跳加速，因为又有事了。你爱他/她，但你也累了。"你是我唯一能找的人"是一句很重的话，它把你变成了一个没有退路的人。',
+    descSelf:'你测出了「永远需要帮助型」。你的生活里总有事情需要处理，而你总是需要朋友来帮。单独来看每一件都不过分。问题是，它们加在一起，变成了一种持续的、不间断的需求。朋友开始接到你的电话会有点心跳加速，因为又有事了。他们爱你，但他们也累了。"你是我唯一能找的人"是一句很重的话，它把对方变成了一个没有退路的人。友谊不是一个无限额的账户，对方也有自己的生活和限度。'},
+  COOL:{code:'COOL',cn:'佛系朋友',intro:'"随缘，有缘自会相聚"',
+    descOther:'你的朋友测出了「佛系朋友」。他/她对友谊有一种超然的态度：缘分到了就在一起，缘分尽了就分开，不强求，不执着，随缘。他/她觉得这是一种成熟，是一种看透了的洒脱。但有时候，"随缘"是一种懒惰的掩护。真正的友谊需要主动，需要付出，需要在不方便的时候也选择出现。他/她可能有很多"随缘"的朋友，但真正深的、在关键时刻会出现的朋友，可能寥寥无几。',
+    descSelf:'你测出了「佛系朋友」。你对友谊有一种超然的态度：缘分到了就在一起，缘分尽了就分开，不强求，不执着，随缘。你觉得这是一种成熟，是一种看透了的洒脱。但有时候，"随缘"是一种懒惰的掩护。真正的友谊需要主动，需要付出，需要在不方便的时候也选择出现。随缘是一种态度，但友谊是一种选择。'},
+  GROW:{code:'GROW',cn:'成长型朋友',intro:'"你最近变化好大，真好"',
+    descOther:'你的朋友测出了「成长型朋友」。他/她是那种让你感觉"和他/她在一起我也想变得更好"的人。他/她不嫉妒你的成功，真心为你高兴；他/她记得你说过的事，会在适当的时候问起；他/她在你需要的时候出现，在你不需要的时候也不消失；他/她说真话，但知道怎么说真话不伤人。他/她把你的成长当成自己的事，因为他/她知道：好朋友之间的关系是正和游戏，不是零和游戏。这种朋友，是稀有资源。',
+    descSelf:'你测出了「成长型朋友」。你是那种让朋友感觉"和你在一起我也想变得更好"的人。你不嫉妒朋友的成功，你真心为他们高兴；你记得朋友说过的事，会在适当的时候问起；你在朋友需要的时候出现，在朋友不需要的时候也不消失；你说真话，但你知道怎么说真话不伤人。你把朋友的成长当成自己的事，因为你知道：好朋友之间的关系是正和游戏，不是零和游戏。这种朋友，是稀有资源。'},
+  SURF:{code:'SURF',cn:'表面型朋友',intro:'"我们关系可好了"',
+    descOther:'你的朋友测出了「表面型朋友」。他/她有很多朋友，或者说，有很多"朋友"。朋友圈里经常有人给他/她点赞，聚会时认识很多人。但如果有一天他/她真的遇到了麻烦，能打电话的人有几个？能在半夜接电话的有几个？表面型朋友不是坏人，只是浅层的。你们在欢乐的时候在一起，在困难的时候各自散去。如果他/她把这种关系当成深厚的友谊，在真正需要的时候会感到孤独。',
+    descSelf:'你测出了「表面型朋友」。你有很多朋友，或者说，你有很多"朋友"。朋友圈里经常有人给你点赞，聚会时你认识很多人。但如果有一天你真的遇到了麻烦，你能打电话的人有几个？能在半夜接你电话的有几个？表面型朋友不是坏人，只是浅层的。如果你把它当成深厚的友谊，你会在真正需要的时候感到孤独。深度需要投入，广度不等于深度。'},
+  ROCK:{code:'ROCK',cn:'磐石型朋友',intro:'"不管什么时候，我都在"',
+    descOther:'你的朋友测出了「磐石型朋友」。他/她是那种十年不见，见面了还是当年那个人的朋友。他/她是那种在你最糟糕的时候出现的人，不是因为有义务，而是因为想。他/她的友谊经得起时间，经得起距离，经得起各自的变化。你换了工作、换了城市、换了生活方式，他/她不会觉得"我们越来越不同了"，他/她会觉得"我很想了解现在的你"。如果你们的朋友们知道这个测评结果，他们会说：是的，就是这样。',
+    descSelf:'你测出了「磐石型朋友」。你是那种十年不见，见面了还是当年那个人的朋友。你是那种在朋友最糟糕的时候出现的人，不是因为你有义务，而是因为你想。你的友谊经得起时间，经得起距离，经得起各自的变化。朋友换了工作、换了城市、换了生活方式，你不会觉得"我们越来越不同了"，你会觉得"我很想了解现在的你"。如果你的朋友们知道这个测评结果，他们会说：是的，就是这样。'},
+};
+
+const HIDDEN_TYPE={code:'PARA',cn:'情感寄生者',intro:'"我不行了，只有你能帮我"',
+  descOther:'你的朋友测出了「情感寄生者」。这个结果需要你认真对待。他/她在友谊里的模式是：需要时出现，不需要时消失；接受你的帮助，但很少主动付出；用"只有你能帮我"把你变成一个没有退路的人。你的朋友可能已经很累了，但因为他/她说"我不行了"，你没办法拒绝。这种无法拒绝，不是友谊，是绑架——情感上的绑架。你可以爱他/她，但你也可以设立边界。"我爱你，但我现在没有能力帮你"是一句可以说出口的话。',
+  descSelf:'你测出了「情感寄生者」。这个结果需要你认真对待。你在友谊里的模式是：需要时出现，不需要时消失；接受朋友的帮助，但很少主动付出；用"只有你能帮我"把对方变成一个没有退路的人。你的朋友可能已经很累了，但因为你说"我不行了"，他们没办法拒绝。这种无法拒绝，不是友谊，是绑架——情感上的绑架。改变的第一步，是问自己：上次我主动帮朋友是什么时候？'
+};
+
+const NORMAL_TYPES=[
+  {code:'GHOST',pattern:'LLL-LLL-LLM-LLL-LLL'},
+  {code:'VENT', pattern:'LLM-LHL-LLM-LLH-LLL'},
+  {code:'COMP', pattern:'MLM-MML-MLM-LLM-LHL'},
+  {code:'LOYAL',pattern:'HHH-HLM-HHH-MHH-HLM'},
+  {code:'EXPO', pattern:'HHM-HLM-LLL-LLM-LLM'},
+  {code:'CRIT', pattern:'MML-MML-MHH-HML-MLM'},
+  {code:'FAIR', pattern:'MLM-HHH-MLH-MLM-MLM'},
+  {code:'NEED', pattern:'LLM-LHH-LLM-LLH-LLM'},
+  {code:'COOL', pattern:'LML-LLM-MLH-LML-MLL'},
+  {code:'GROW', pattern:'HHH-HHH-HHH-HHH-HHH'},
+  {code:'SURF', pattern:'MLL-LLL-LLM-LLL-LLL'},
+  {code:'ROCK', pattern:'HHH-HHH-HHH-HHH-HHH'},
+];
+
+const questions=[
+  {id:'q1',dim:'I1',other:'你们上次他/她主动联系你（不是因为有事），是什么时候？',self:'你上次主动联系一个朋友（不是因为有事），是什么时候？',options:[{label:'记不清了，好像很久了',value:1},{label:'上个月吧，或者朋友生日的时候',value:2},{label:'最近就有，就是想聊聊，没有特别的原因',value:3}]},
+  {id:'q2',dim:'I1',other:'朋友圈里你发了一条让他/她觉得你可能不太好的动态，他/她会？',self:'朋友圈里有人发了一条让你觉得他/她可能不太好的动态，你会？',options:[{label:'点个赞，或者什么都不做',value:1},{label:'在评论区说"怎么了"，等对方回',value:2},{label:'直接私信问，"看你发的，你还好吗"',value:3}]},
+  {id:'q3',dim:'I2',other:'你遇到了一件很难的事（失业、分手、家人生病），他/她会？',self:'朋友遇到了一件很难的事（失业、分手、家人生病），你会？',options:[{label:'发一条"加油"，然后等你说需要什么',value:1},{label:'打个电话，问问情况，说"有需要找我"',value:2},{label:'主动问能做什么，如果可以，出现在你面前',value:3}]},
+  {id:'q4',dim:'I2',other:'你有一件重要的事（面试、手术、重要演讲），他/她会？',self:'朋友有一件重要的事（面试、手术、重要演讲），你会？',options:[{label:'可能知道，但不一定记得问结果',value:1},{label:'记得，事后问了一句"怎么样了"',value:2},{label:'记得，在之前发消息说"加油"，之后第一时间问结果',value:3}]},
+  {id:'q5',dim:'I3',other:'你上次和他/她说的一件重要的事，他/她还记得吗？',self:'朋友上次和你说的一件重要的事，你还记得吗？',options:[{label:'不太记得，聊了很多，记不住',value:1},{label:'大概记得，但细节忘了',value:2},{label:'记得，而且下次见面会主动问起',value:3}]},
+  {id:'q6',dim:'I3',other:'你的重要日期（生日、重要节点），他/她？',self:'朋友的重要日期（生日、重要节点），你？',options:[{label:'基本靠朋友圈提醒，或者不记得',value:1},{label:'记得生日，其他的不一定',value:2},{label:'记得，而且会在那天主动联系',value:3}]},
+  {id:'q7',dim:'R1',other:'你需要他/她帮一个比较麻烦的忙（花半天时间），他/她会？',self:'朋友需要你帮一个比较麻烦的忙（花你半天时间），你会？',options:[{label:'找理由推脱，或者答应了但拖着不做',value:1},{label:'答应，但心里有点不情愿',value:2},{label:'愿意帮，因为如果是你，朋友也会这样做',value:3}]},
+  {id:'q8',dim:'R1',other:'你在外地，他/她路过那个城市，他/她会？',self:'朋友在外地，你路过那个城市，你会？',options:[{label:'不一定会联系，除非朋友主动',value:1},{label:'发个消息说"我在你们这，有空吗"，有空就见，没空就算',value:2},{label:'提前告诉朋友，约好时间，专门留出来见面',value:3}]},
+  {id:'q9',dim:'R2',other:'回想你们最近的互动，主要是？',self:'回想你最近和朋友的互动，主要是？',options:[{label:'大多数是他/她找你，说他/她的事，需要你帮忙或者倾听',value:1},{label:'差不多，有时候他/她找你，有时候你找他/她',value:2},{label:'他/她会主动问你怎么样，也会主动分享自己的事',value:3}]},
+  {id:'q10',dim:'R2',other:'他/她有没有想过，在这段友谊里索取了多少，付出了多少？',self:'你有没有想过，你在这段友谊里索取了多少，付出了多少？',options:[{label:'没想过，朋友就是互相帮忙的',value:1},{label:'想过，觉得差不多平衡',value:2},{label:'想过，而且如果发现不平衡，会主动调整',value:3}]},
+  {id:'q11',dim:'R3',other:'如果你发现这段友谊里，一直是你在付出更多，他/她会？',self:'如果你发现这段友谊里，一直是对方在付出更多，你会？',options:[{label:'觉得正常，对方愿意嘛',value:1},{label:'有点不好意思，但没有实际改变',value:2},{label:'主动说出来，然后改变自己的行为',value:3}]},
+  {id:'q12',dim:'R3',other:'你总是在他/她有需要的时候出现，但他/她很少主动找你，他/她会？',self:'朋友总是在你有需要的时候出现，但你很少主动找他/她，你会？',options:[{label:'觉得这就是友谊的方式，没什么问题',value:1},{label:'偶尔会有点愧疚',value:2},{label:'认真反思，然后开始主动联系',value:3}]},
+  {id:'q13',dim:'T1',other:'你告诉他/她一个秘密，他/她会？',self:'朋友告诉你一个秘密，你会？',options:[{label:'觉得告诉另一个共同朋友应该没关系',value:1},{label:'大多数时候守住，但有时候忍不住提一提',value:2},{label:'守住，除非你说可以说',value:3}]},
+  {id:'q14',dim:'T1',other:'你的八卦（感情问题、工作困境、家庭矛盾），他/她会？',self:'朋友的八卦（感情问题、工作困境、家庭矛盾），你会？',options:[{label:'当成有趣的话题和其他朋友分享',value:1},{label:'自己知道就好，但如果别人问起可能会说一点',value:2},{label:'不传，那是朋友的私事',value:3}]},
+  {id:'q15',dim:'T2',other:'你做了一个他/她觉得不好的决定，他/她会？',self:'朋友做了一个你觉得不好的决定，你会？',options:[{label:'说"挺好的"，反正不是自己的事',value:1},{label:'心里有想法，但不说，怕伤感情',value:2},{label:'找合适的时机，用合适的方式说出来，但最终尊重对方的决定',value:3}]},
+  {id:'q16',dim:'T2',other:'你问他/她"我这样做对吗"，他/她觉得不对，会？',self:'朋友问你"我这样做对吗"，你觉得不对，你会？',options:[{label:'说"你觉得对就好"，不想卷进去',value:1},{label:'说"也还好吧"，给个模糊的答案',value:2},{label:'直接说你的看法，但说完之后说"最终你自己决定"',value:3}]},
+  {id:'q17',dim:'T3',other:'和他/她三年没见，你们的关系？',self:'和一个朋友三年没见，你们的关系？',options:[{label:'基本疏远了，再见面有点尴尬',value:1},{label:'还有联系，但没那么亲了',value:2},{label:'见面还是很自然，感情没变',value:3}]},
+  {id:'q18',dim:'T3',other:'你的生活发生了很大变化（结婚、生孩子、移民），你们的友谊？',self:'朋友的生活发生了很大变化（结婚、生孩子、移民），你们的友谊？',options:[{label:'明显变淡了，共同话题少了',value:1},{label:'有点影响，但在努力维持',value:2},{label:'适应了新的相处方式，感情没有因此变淡',value:3}]},
+  {id:'q19',dim:'C1',other:'你做了一件让他/她很不舒服的事，他/她会？',self:'朋友做了一件让你很不舒服的事，你会？',options:[{label:'忍着，或者从此疏远，但不说',value:1},{label:'暗示，或者等对方发现',value:2},{label:'直接说，"上次那件事让我有点不舒服，我们聊一下"',value:3}]},
+  {id:'q20',dim:'C1',other:'友谊里出现了矛盾，他/她会？',self:'友谊里出现了矛盾，你会？',options:[{label:'等它自己消失，或者装作没发生',value:1},{label:'知道要处理，但一直拖着',value:2},{label:'主动提出来聊，觉得说清楚比让它发酵要好',value:3}]},
+  {id:'q21',dim:'C2',other:'你爽约了（不是第一次），他/她会？',self:'朋友爽约了（不是第一次），你会？',options:[{label:'非常不满，可能直接冷战',value:1},{label:'有点不高兴，说了一句，然后算了',value:2},{label:'说出感受，听对方解释，然后一起想怎么避免下次',value:3}]},
+  {id:'q22',dim:'C2',other:'你有一个他/她很不喜欢的习惯，他/她会？',self:'朋友有一个你很不喜欢的习惯，你会？',options:[{label:'经常提，希望对方改',value:1},{label:'忍着，但偶尔会说一句',value:2},{label:'如果不影响自己，就接受；如果影响到了，说一次，然后尊重对方',value:3}]},
+  {id:'q23',dim:'C3',other:'和你闹了矛盾，他/她会？',self:'和朋友闹了矛盾，你会？',options:[{label:'等你来道歉，不主动',value:1},{label:'想修复，但不知道怎么开口',value:2},{label:'主动联系，说"我们上次的事，我想聊一下"',value:3}]},
+  {id:'q24',dim:'C3',other:'友谊出现了比较大的裂痕，他/她会？',self:'友谊出现了比较大的裂痕，你会？',options:[{label:'觉得算了，朋友就是聚散有时',value:1},{label:'有点遗憾，但不知道能做什么',value:2},{label:'认真想这段友谊值不值得修复，如果值得，主动去做',value:3}]},
+  {id:'q25',dim:'G1',other:'你开始了一段他/她不太理解的新旅程（转行、信了某个宗教、开始健身），他/她会？',self:'朋友开始了一段你不太理解的新旅程（转行、信了某个宗教、开始健身），你会？',options:[{label:'觉得对方变了，有点不舒服',value:1},{label:'尊重，但不太感兴趣了解',value:2},{label:'好奇，想了解对方为什么，即使不理解也支持',value:3}]},
+  {id:'q26',dim:'G1',other:'你变了很多，和当年认识的那个人不太一样了，他/她会？',self:'朋友变了很多，和当年认识的那个人不太一样了，你会？',options:[{label:'觉得失去了那个朋友，有点失落',value:1},{label:'接受，但有点不适应',value:2},{label:'觉得有意思，想认识现在的他/她',value:3}]},
+  {id:'q27',dim:'G2',other:'你在他/她羡慕的领域取得了成功，他/她的真实感受是？',self:'朋友在你羡慕的领域取得了成功，你的真实感受是？',options:[{label:'高兴不起来，心里有点酸，虽然嘴上说恭喜',value:1},{label:'有点复杂，但努力让自己真心高兴',value:2},{label:'真心为他/她高兴，觉得朋友好是一件值得庆祝的事',value:3}]},
+  {id:'q28',dim:'G2',other:'你比他/她先实现了你们共同的目标（买房、结婚、升职），他/她会？',self:'朋友比你先实现了你们共同的目标（买房、结婚、升职），你会？',options:[{label:'有点难受，开始怀疑自己',value:1},{label:'有点酸，但告诉自己没关系',value:2},{label:'恭喜朋友，然后想想自己的节奏，不拿来比较',value:3}]},
+  {id:'q29',dim:'G3',other:'人生不同阶段，他/她和你的相处方式？',self:'人生不同阶段，你和朋友的相处方式？',options:[{label:'没怎么变，还是当年那种方式，不适应就疏远',value:1},{label:'有点变化，但没有刻意去调整',value:2},{label:'随着各自的变化，主动调整相处方式，找到新的节奏',value:3}]},
+  {id:'q30',dim:'G3',other:'对于友谊，他/她的态度是？',self:'对于友谊，你的态度是？',options:[{label:'缘分到了就在，缘分尽了就散，不强求',value:1},{label:'珍惜，但不太知道怎么维护',value:2},{label:'友谊需要主动投入，愿意为重要的友谊付出时间和精力',value:3}]},
+];
+
+let current=0,answers={},shuffled=[...questions],perspective='other';
+function setPerspective(p){perspective=p;document.getElementById('persp-other').classList.toggle('active',p==='other');document.getElementById('persp-self').classList.toggle('active',p==='self');}
+async function loadStats(){try{const r=await fetch('/api/fbti/stats');if(!r.ok)return;const d=await r.json();if(d.total>0){document.getElementById('counter-num').textContent=d.total.toLocaleString();document.getElementById('counter').style.display='block';}}catch(e){}}
+async function submitResult(tc,tcn,ds,a){try{await fetch('/api/fbti/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type_code:tc,type_cn:tcn,dim_scores:ds,answers:a})});}catch(e){}}
+loadStats();
+function startTest(){shuffled=[...questions].sort(()=>Math.random()-.5);current=0;answers={};document.getElementById('persp-tag').textContent=perspective==='other'?'🔍 鉴定朋友':'🪞 审视自己';showScreen('quiz');renderQ();}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+function renderQ(){const q=shuffled[current];const total=shuffled.length;document.getElementById('progress-bar').style.width=Math.round((current/total)*100)+'%';document.getElementById('progress-label').textContent=`${current} / ${total}`;const sel=answers[q.id];document.getElementById('btn-prev').disabled=current===0;document.getElementById('btn-next').disabled=!sel;document.getElementById('btn-next').textContent=current===total-1?'查看结果 →':'下一题 →';const qText=perspective==='other'?q.other:q.self;document.getElementById('q-container').innerHTML=`<div class="card q-card"><div class="q-dim">${DIM_META[q.dim]?.name||q.dim} · ${DIM_META[q.dim]?.model||''}</div><div class="q-text">${qText}</div><div class="options">${q.options.map(o=>`<button class="opt-btn ${sel===o.value?'selected':''}" onclick="selectOpt('${q.id}',${o.value})">${o.label}</button>`).join('')}</div></div>`;}
+function selectOpt(qid,val){answers[qid]=val;document.getElementById('btn-next').disabled=false;renderQ();}
+function nextQ(){const q=shuffled[current];if(!answers[q.id])return;if(current===shuffled.length-1)calcResult();else{current++;renderQ();}}
+function prevQ(){if(current>0){current--;renderQ();}}
+function calcResult(){let c1=0,mc=0;for(const q of shuffled){if(answers[q.id]===1){c1++;mc=Math.max(mc,c1);}else c1=0;}if(mc>=5){showResult(HIDDEN_TYPE,null);return;}const ds={};for(const q of questions){if(!ds[q.dim])ds[q.dim]=[];if(answers[q.id])ds[q.dim].push(answers[q.id]);}const up={};for(const dim of DIM_ORDER){const vals=ds[dim]||[2];const avg=vals.reduce((a,b)=>a+b,0)/vals.length;const r=Math.round(avg);up[dim]=r<=1?'L':r>=3?'H':'M';}let best=null,bd=999;for(const t of NORMAL_TYPES){const pa=t.pattern.replace(/-/g,'').split('');let d=0;DIM_ORDER.forEach((dim,i)=>{if(up[dim]!==pa[i])d++;});if(d<bd){bd=d;best=t;}}showResult(TYPE_LIBRARY[best.code]||{code:best.code,cn:'?',intro:'?',descOther:'?',descSelf:'?'},up);}
+function showResult(type,up){submitResult(type.code,type.cn,up,answers);const ih=type.code==='PARA';const perspLabel=perspective==='other'?'🤝 朋友人格鉴定结果':'🪞 自我审视结果';const bh=ih?`<div class="hidden-badge">💀 隐藏人格解锁</div>`:`<div class="result-badge">${perspLabel}</div>`;const desc=perspective==='other'?(type.descOther||''):(type.descSelf||'');let dh='';if(up){dh=`<div class="dims-title">📊 15维度画像</div><div class="dims-grid">${DIM_ORDER.map(dim=>{const s=up[dim]||'M';const l=s==='H'?'高':s==='L'?'低':'中';return`<div class="dim-item"><div class="dim-name">${DIM_META[dim]?.name||dim}</div><div class="dim-bar-bg"><div class="dim-bar ${s}"></div></div><div class="dim-score ${s}">${l}</div></div>`;}).join('')}</div>`;}document.getElementById('result-content').innerHTML=`${bh}<div class="result-code ${ih?'hidden-type':''}">${type.code}</div><div class="result-cn">${type.cn}</div><div class="result-intro">${type.intro}</div><div class="result-desc">${desc}</div>${dh}<div class="result-actions"><button class="btn-primary" onclick="startTest()">重新鉴定</button><button class="btn-secondary" onclick="showScreen('intro')">返回首页</button></div>`;showScreen('result');}
+</script>
+</body>
+</html>

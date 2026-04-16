@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LPTI 人格图鉴 · 20种恋爱人格</title>
+  <style>
+    :root{--panel:#ffffff;--text:#1a0812;--muted:#7c5868;--line:#f0d4e0;--soft:#fce7f3;--accent:#be185d;--accent-strong:#9d174d;--radius:20px;--shadow:0 8px 32px rgba(190,24,93,0.08);}
+    *{box-sizing:border-box;}html,body{margin:0;padding:0;}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:radial-gradient(circle at top left,#fce7f3 0,#fff0f6 40%,#fff5f8 100%);color:var(--text);min-height:100vh;}
+    .shell{max-width:1100px;margin:0 auto;padding:32px 16px 64px;}
+    .hero{text-align:center;padding:48px 24px 40px;background:var(--panel);border-radius:var(--radius);border:1px solid var(--line);box-shadow:var(--shadow);margin-bottom:32px;position:relative;overflow:hidden;}
+    .hero::before{content:"";position:absolute;top:-80px;right:-80px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(190,24,93,0.12),transparent 70%);pointer-events:none;}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--accent-strong);border:1px solid var(--line);background:var(--soft);border-radius:999px;padding:6px 14px;margin-bottom:16px;}
+    .hero h1{font-size:clamp(28px,5vw,48px);font-weight:900;letter-spacing:-.03em;margin:0 0 12px;}
+    .hero p{color:var(--muted);font-size:15px;margin:0 0 24px;line-height:1.7;}
+    .hero-stats{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;}
+    .stat-item{text-align:center;}.stat-num{font-size:28px;font-weight:900;color:var(--accent-strong);}.stat-label{font-size:12px;color:var(--muted);margin-top:2px;}
+    .btn-test{display:inline-flex;align-items:center;gap:8px;background:var(--accent-strong);color:#fff;padding:12px 24px;border-radius:14px;text-decoration:none;font-weight:700;font-size:14px;margin-top:20px;box-shadow:0 8px 24px rgba(157,23,77,0.25);transition:transform .15s;}
+    .btn-test:hover{transform:translateY(-2px);}
+    .filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;align-items:center;}
+    .filter-btn{padding:7px 16px;border-radius:999px;font-size:13px;font-weight:600;border:1.5px solid var(--line);background:var(--panel);color:var(--muted);cursor:pointer;transition:all .15s;}
+    .filter-btn:hover,.filter-btn.active{border-color:var(--accent);background:var(--soft);color:var(--accent-strong);}
+    .filter-btn.active{background:var(--accent-strong);color:#fff;border-color:var(--accent-strong);}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;}
+    .type-card{background:var(--panel);border:1.5px solid var(--line);border-radius:var(--radius);padding:0;box-shadow:var(--shadow);overflow:hidden;transition:transform .2s,box-shadow .2s,border-color .2s;}
+    .type-card:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(190,24,93,0.13);border-color:var(--accent);}
+    .type-card.hidden-card{border-color:#dc2626;}.type-card.hidden-card:hover{box-shadow:0 16px 40px rgba(220,38,38,0.15);}
+    .card-header{padding:20px 20px 16px;background:linear-gradient(135deg,var(--soft),#fff);border-bottom:1px solid var(--line);display:flex;align-items:flex-start;gap:14px;}
+    .type-card.hidden-card .card-header{background:linear-gradient(135deg,#fff1f1,#fff);}
+    .card-emoji{font-size:32px;line-height:1;flex-shrink:0;margin-top:2px;}
+    .card-title{flex:1;}
+    .card-code{font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--accent-strong);background:var(--soft);padding:3px 10px;border-radius:999px;display:inline-block;margin-bottom:6px;}
+    .type-card.hidden-card .card-code{color:#dc2626;background:#fff1f1;}
+    .card-cn{font-size:18px;font-weight:800;margin:0 0 4px;}.card-intro{font-size:13px;color:var(--muted);margin:0;line-height:1.5;}
+    .card-body{padding:16px 20px 20px;}
+    .card-desc{font-size:13px;line-height:1.75;color:#3d3d50;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:14px;}
+    .type-card.expanded .card-desc{-webkit-line-clamp:unset;overflow:visible;}
+    .pattern-wrap{margin-bottom:12px;}.pattern-label{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:.05em;}
+    .pattern-dims{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
+    .dim-group-label{font-size:9px;color:var(--muted);text-align:center;margin-bottom:4px;}
+    .dim-bars{display:flex;gap:3px;justify-content:center;}
+    .dim-dot{width:14px;height:14px;border-radius:4px;font-size:8px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;}
+    .dim-dot.H{background:#059669;}.dim-dot.M{background:#d97706;}.dim-dot.L{background:#dc2626;}
+    .card-footer{display:flex;justify-content:space-between;align-items:center;}
+    .expand-btn{font-size:12px;color:var(--accent-strong);font-weight:600;background:none;border:none;cursor:pointer;padding:0;}
+    .expand-btn:hover{text-decoration:underline;}
+    .hidden-badge{font-size:11px;font-weight:700;color:#dc2626;background:#fff1f1;border:1px solid #fecaca;padding:3px 10px;border-radius:999px;}
+    .search-wrap{position:relative;margin-bottom:20px;}
+    .search-input{width:100%;padding:12px 16px 12px 40px;border:1.5px solid var(--line);border-radius:14px;font-size:14px;background:var(--panel);color:var(--text);outline:none;transition:border-color .15s;}
+    .search-input:focus{border-color:var(--accent);}
+    .search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:16px;pointer-events:none;}
+    .no-result{text-align:center;padding:48px;color:var(--muted);font-size:15px;}
+    @media(max-width:600px){.grid{grid-template-columns:1fr;}.hero-stats{gap:20px;}}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <div class="hero">
+    <div class="eyebrow">💘 LPTI 恋爱人格图鉴</div>
+    <h1>20种恋爱人格<br>你的另一半是哪种？</h1>
+    <p>30道题 · 5大模型 · 15个维度 · 娱乐向，请勿当真</p>
+    <div class="hero-stats">
+      <div class="stat-item"><div class="stat-num">19</div><div class="stat-label">普通人格</div></div>
+      <div class="stat-item"><div class="stat-num">1</div><div class="stat-label">隐藏人格</div></div>
+      <div class="stat-item"><div class="stat-num">30</div><div class="stat-label">测评题目</div></div>
+      <div class="stat-item"><div class="stat-num" id="total-count">-</div><div class="stat-label">已测评人数</div></div>
+    </div>
+    <a class="btn-test" href="/">开始鉴定恋人 →</a>
+  </div>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" type="text" placeholder="搜索人格名称或关键词…" id="search-input" oninput="renderGrid()">
+  </div>
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="setFilter('all',this)">全部 (20)</button>
+    <button class="filter-btn" onclick="setFilter('anxious',this)">焦虑依恋</button>
+    <button class="filter-btn" onclick="setFilter('avoidant',this)">回避依恋</button>
+    <button class="filter-btn" onclick="setFilter('control',this)">控制欲强</button>
+    <button class="filter-btn" onclick="setFilter('good',this)">还能处 ✅</button>
+    <button class="filter-btn" onclick="setFilter('hidden',this)">隐藏人格 💀</button>
+  </div>
+  <div class="grid" id="card-grid"></div>
+  <div class="no-result" id="no-result" style="display:none">没有找到匹配的人格 🤔</div>
+</div>
+<script>
+const TYPES=[
+  {code:'CLING',cn:'黏附型',emoji:'🔗',intro:'"你为什么不回我消息"',tags:['anxious'],pattern:'HLH-LML-HHM-LLM-LLM',desc:'你的另一半测出了「黏附型」。他/她的手机屏幕常亮，不是在刷视频，是在等你回消息。三分钟没回，开始担心；十分钟没回，开始想象各种可能性；三十分钟没回，已经在脑子里排演了一遍分手场景。他/她的安全感需要你每天、每小时、最好每分钟来充值。"在吗"是他/她最常发的三个字。他/她越黏，你越想逃；你越逃，他/她越黏。这是一个完美的死循环。他/她需要的不是一个更有耐心的伴侣，而是先学会和自己待着。'},
+  {code:'GHOST',cn:'消失型',emoji:'👻',intro:'"我只是需要点空间"',tags:['avoidant'],pattern:'LHL-LLM-LLL-HHL-LLL',desc:'你的另一半测出了「消失型」。他/她消失是有规律的：关系进展太快——消失；你表达需求——消失；有冲突要处理——消失；感觉太亲密了——消失。"我需要空间"是他/她的口头禅，但说的"空间"其实是"距离"。你在等他/她，在担心，在猜测，在自我怀疑——"是我哪里做错了吗？"他/她消失的这段时间，你经历的是一种缓慢的折磨。而他/她回来的时候，好像什么都没发生。'},
+  {code:'DRAMA',cn:'情绪炸弹',emoji:'💥',intro:'"你根本不在乎我"',tags:['anxious'],pattern:'HLL-LLM-HHL-LLL-LLM',desc:'你的另一半测出了「情绪炸弹」。他/她的情绪是一颗随机引爆的炸弹，你永远不知道今天踩到的是哪根线。早上还好好的，下午因为一句话炸了；昨天刚和好，今天因为一个表情又炸了。他/她最常说的话是"你根本不在乎我"，意思通常是"我现在很难受，但我不知道怎么说清楚"。他/她把你变成了一道无解的题：安慰了说"你在无理取闹"，不安慰说"你不在乎我"。'},
+  {code:'PERF',cn:'完美伴侣幻想者',emoji:'✨',intro:'"我只是希望你能更好"',tags:['control'],pattern:'MML-MLM-MMM-MHL-MLM',desc:'你的另一半测出了「完美伴侣幻想者」。他/她脑子里住着一个完美的伴侣，那个人更体贴、更上进、更懂他/她。现实中的你和那个人有差距，于是开始了漫长的"改造工程"。"你能不能……""你为什么不……""你看别人……"这些句式是他/她最常用的，他/她以为在帮你成长，你感受到的是：我现在的样子不够好。'},
+  {code:'AVOI',cn:'回避型',emoji:'🚪',intro:'"我不擅长表达，你懂的"',tags:['avoidant'],pattern:'LHL-LLL-LLH-HHL-LLL',desc:'你的另一半测出了「回避型」。"我不擅长表达"是他/她最常用的免责声明，它可以解释为什么不说爱、为什么在你难过时不知所措、为什么在关系出现问题时选择沉默而不是沟通。他/她不是不爱，只是不会爱。你不是不懂，你只是累了。累了猜，累了等，累了在他/她沉默的时候不知道是生气了、冷漠了、还是只是在想事情。'},
+  {code:'CTRL',cn:'控制型',emoji:'🎯',intro:'"我这样做是因为我爱你"',tags:['control'],pattern:'HLH-LLL-HML-LHH-LLL',desc:'你的另一半测出了「控制型」。他/她的爱是有条件的，条件是：你按照他/她的方式来。你的朋友、穿着、时间安排、手机联系人，都在他/她的监控范围内。他/她不把这叫控制，叫"在乎"，叫"负责任"，叫"为你好"。查手机——因为爱你；不让见朋友——因为爱你。爱不是占有，不是管理，不是把你的自由换成他/她的安全感。那个笼子，最终会把你们两个都困住。'},
+  {code:'HEAL',cn:'拯救者型',emoji:'🦸',intro:'"我可以改变他/她"',tags:[],pattern:'HML-MHM-MML-LMH-MLM',desc:'你的另一半测出了「拯救者型」。他/她有一个超能力：专门被"需要被拯救"的人吸引。那些有故事的、有伤的、有问题的——对他/她有致命的吸引力。因为在他们身上，他/她找到了价值感：我是被需要的，我可以改变他/她。他/她投入大量时间、精力、情感去帮对方，但有一个问题：对方并不总是想被改变。真正的爱不需要一方是救世主，另一方是待救者。'},
+  {code:'COLD',cn:'情感回避者',emoji:'🧊',intro:'"我不是那种会说爱的人"',tags:['avoidant'],pattern:'LLL-LLL-LLH-HHL-LLL',desc:'你的另一半测出了「情感回避者」。他/她最大的防御工事，是提前告诉你"我不是那种会说爱的人"，这样当他/她表现冷漠时，你没有资格抱怨，因为他/她提前说明了。他/她可以谈恋爱，但不要太深；可以在一起，但不要太亲密；可以喜欢，但不要说爱。情感对他/她来说是一个危险区域，进去了就意味着可能受伤，所以他/她在门口徘徊，假装自己不需要进去。你在这段关系里是孤独的。他/她不是不能爱，他/她只是害怕爱。'},
+  {code:'ANXI',cn:'预期灾难型',emoji:'⚡',intro:'"我感觉你要离开我了"',tags:['anxious'],pattern:'HLH-LLL-HHH-LLL-LLM',desc:'你的另一半测出了「预期灾难型」。他/她有一种特殊的能力：在关系最好的时候，感到最不安。你对他/她越好，他/她越害怕失去；关系越稳定，他/她越觉得"不正常，肯定有什么问题"。"我感觉你要离开我了"是他/她的口头禅。问题是，他/她的行为——反复确认、过度解读、提前防御——反而在把你推走。他/她在用对"失去"的恐惧，提前破坏一段还好好的关系。'},
+  {code:'GROW',cn:'成长型',emoji:'🌱',intro:'"我们可以一起变得更好"',tags:['good'],pattern:'MLH-HHH-MHH-MMH-HHH',desc:'你的另一半测出了「成长型」。在所有类型里，他/她是最难得的一种。他/她知道自己的问题，愿意说出来，也愿意听你说。他/她不把关系当成一场竞争，也不把你当成一个需要管理的项目。他/她会吵架，但吵完了会聊，会道歉，会真的解决问题。遇到他/她，是你的运气。希望你也是同样值得的人。'},
+  {code:'PLAY',cn:'游戏人间型',emoji:'🎲',intro:'"认真你就输了"',tags:['avoidant'],pattern:'LHL-LLM-LLL-HHL-LLL',desc:'你的另一半测出了「游戏人间型」。感情对他/她来说是一场游戏，规则是：不能先动真情，不能先表白，不能先认真。谁先认真谁就输了。他/她很会撩，很会若即若离，很会制造吸引力。但他/她不会投入，不会脆弱，不会真正打开自己。所以他/她的感情史里有很多故事，但很少有真正深入的关系。有一天他/她会遇到一个让他/她想认真的人，然后发现，已经不会了。'},
+  {code:'RELY',cn:'过度依赖型',emoji:'🧲',intro:'"没有你我不知道怎么办"',tags:['anxious'],pattern:'HLH-LLM-MMM-LLM-LMM',desc:'你的另一半测出了「过度依赖型」。他/她把你当成了全部——情感支柱、决策顾问、快乐来源、人生意义。"没有你我不知道怎么办"不是情话，是真实的心理状态。他/她的情绪、自信、安全感，都外包给了你。这对你来说是一种很重的压力。你不只是在谈恋爱，你在承担他/她的整个心理世界。这不公平，也不可持续。'},
+  {code:'SAFE',cn:'安全型',emoji:'🏠',intro:'"我在，说吧"',tags:['good'],pattern:'MHM-HHH-MHH-MHH-HHH',desc:'你的另一半测出了「安全型」。"我在，说吧"——这四个字，是整个测评里最温暖的触发语。他/她不完美，也有情绪，也有需求，也有做不好的时候。但他/她有一个核心的稳定性：知道自己是谁，知道在这段关系里要什么，也知道你是一个独立的、值得被尊重的人。他/她的安全感不依赖你的每一条回复，自我价值不取决于这段关系的状态。在他/她身边，你会感到被看见、被接纳、被支持。'},
+  {code:'MIRR',cn:'镜像型',emoji:'🪞',intro:'"你喜欢什么我就喜欢什么"',tags:[],pattern:'LMH-MHM-LMM-LMM-LMH',desc:'你的另一半测出了「镜像型」。他/她是完美的伴侣——你喜欢爬山，他/她突然也爱上了爬山；你喜欢某个乐队，他/她立刻变成了铁粉；你的朋友圈，他/她都觉得很好。这听起来很和谐，但有一个问题：他/她在哪里？他/她自己的想法、喜好、边界，都被压缩成了你的倒影。这种关系开始时很甜，时间长了会让你感到奇怪的孤独——因为你在和一面镜子谈恋爱，而不是一个真实的人。'},
+  {code:'JEAL',cn:'嫉妒型',emoji:'🔥',intro:'"你为什么要和他/她说话"',tags:['control'],pattern:'HLH-LLM-HMH-LHH-LLM',desc:'你的另一半测出了「嫉妒型」。他/她的嫉妒不是偶尔的，是系统性的。你和同事说话——"你们关系很好吗"；你点赞了一个陌生人——"你认识他/她吗"；你出门晚了——"你去哪了"。他/她把嫉妒包装成爱，但嫉妒和爱的区别很清楚：爱让你自由，嫉妒让你窒息。他/她的嫉妒来自内心深处的不安全感，但那个不安全感不是你的问题，不应该由你来承担。'},
+  {code:'COLD2',cn:'情绪隔离型',emoji:'🫥',intro:'"我没事，你别多想"',tags:['avoidant'],pattern:'LLL-LLM-LHH-HHL-LLL',desc:'你的另一半测出了「情绪隔离型」。他/她不是没有情绪，他/她是把情绪关在一个很深的地方，不让任何人看见。你问他/她怎么了，他/她说"没事"；你感觉他/她在生气，他/她说"我没生气"；你说"我们聊聊"，他/她说"没什么好聊的"。他/她不是在骗你，他/她是真的不知道怎么打开那扇门。问题是：你在门外，他/她在门里，你们之间隔着一扇永远关着的门。'},
+  {code:'OBSV',cn:'观察者型',emoji:'🔭',intro:'"我只是想多了解你"',tags:[],pattern:'MHM-LMM-MHH-MLM-MHM',desc:'你的另一半测出了「观察者型」。他/她记得你说过的每一件事——你三年前提过的一个喜好，你随口说的一个梦想，你不经意流露的一个恐惧。他/她用这些信息构建了一幅关于你的精密地图，然后用这张地图来爱你。这听起来很浪漫，但有时候会让你感到一种奇怪的不适：他/她了解你，但你不确定他/她是否真的在和你互动，还是在和他/她心中那个关于你的模型互动。'},
+  {code:'PART',cn:'伙伴型',emoji:'🤝',intro:'"我们是一个团队"',tags:['good'],pattern:'MHH-HHH-MMH-HHM-HHH',desc:'你的另一半测出了「伙伴型」。他/她不把感情当成一场你追我赶的游戏，也不把你当成一个需要管理的项目。他/她把你们看成一个团队：有共同的目标，有各自的空间，有真实的沟通，有互相的支持。他/她在你成功时真心高兴，在你失败时真心陪着，在你需要独处时不会觉得被抛弃。这种关系不是最轰烈的，但是最踏实的。'},
+  {code:'TRAP',cn:'情感囚禁型',emoji:'⛓️',intro:'"你离不开我的"',tags:['control'],pattern:'HLH-LLL-HHH-LHH-LLL',desc:'你的另一半测出了「情感囚禁型」。他/她不打你，但他/她用其他方式困住你：让你依赖他/她、让你觉得没有他/她你活不下去、让你的社交圈越来越小、让你在每一次想离开时都感到巨大的愧疚和恐惧。"你离不开我的"不是一句情话，是一句威胁。如果你在这段关系里感到被困住、被控制、无法离开，这不是爱，请认真考虑寻求帮助。'},
+  {code:'NARC',cn:'情感掠夺者',emoji:'💀',intro:'"你离不开我的"',tags:['hidden'],hidden:true,pattern:'隐藏触发',desc:'你的另一半测出了「情感掠夺者」。这不是一个好的结果，请认真对待。他/她在关系里的模式是：索取、控制、不反思。他/她的需求是无限的，你的边界是不存在的，他/她对自己行为的觉察是接近零的。他/她可能会用魅力吸引你，用愧疚留住你，用恐惧控制你。如果你在这段关系里感到持续的痛苦和窒息，这不是你的问题。离开是你可以为自己做的事。'},
+];
+const GROUP_LABELS=['依恋','沟通','情绪','边界','成长'];
+let currentFilter='all',expandedCards=new Set();
+function parsePattern(p){if(p==='隐藏触发')return null;return p.replace(/-/g,'').split('');}
+function renderPatternDots(p){const vals=parsePattern(p);if(!vals)return`<div style="font-size:12px;color:#dc2626;font-weight:700;padding:4px 0">🔒 隐藏触发条件</div>`;const groups=[[0,1,2],[3,4,5],[6,7,8],[9,10,11],[12,13,14]];return`<div class="pattern-dims">${groups.map((g,gi)=>`<div class="dim-group"><div class="dim-group-label">${GROUP_LABELS[gi]}</div><div class="dim-bars">${g.map(i=>`<div class="dim-dot ${vals[i]}">${vals[i]}</div>`).join('')}</div></div>`).join('')}</div>`;}
+function renderCard(t){const ie=expandedCards.has(t.code);return`<div class="type-card ${t.hidden?'hidden-card':''} ${ie?'expanded':''}" id="card-${t.code}"><div class="card-header"><div class="card-emoji">${t.emoji}</div><div class="card-title"><div class="card-code">${t.code}</div><div class="card-cn">${t.cn}</div><p class="card-intro">${t.intro}</p></div></div><div class="card-body"><div class="card-desc">${t.desc}</div><div class="pattern-wrap"><div class="pattern-label">维度画像</div>${renderPatternDots(t.pattern)}</div><div class="card-footer"><button class="expand-btn" onclick="toggleExpand('${t.code}')">${ie?'收起 ↑':'展开全文 ↓'}</button>${t.hidden?'<span class="hidden-badge">💀 隐藏人格</span>':''}</div></div></div>`;}
+function renderGrid(){const q=document.getElementById('search-input').value.toLowerCase();const filtered=TYPES.filter(t=>{const mf=currentFilter==='all'||t.tags.includes(currentFilter);const ms=!q||t.code.toLowerCase().includes(q)||t.cn.includes(q)||t.intro.includes(q)||t.desc.includes(q);return mf&&ms;});const g=document.getElementById('card-grid');const nr=document.getElementById('no-result');if(filtered.length===0){g.innerHTML='';nr.style.display='block';}else{nr.style.display='none';g.innerHTML=filtered.map(renderCard).join('');}}
+function toggleExpand(code){if(expandedCards.has(code))expandedCards.delete(code);else expandedCards.add(code);renderGrid();setTimeout(()=>{const el=document.getElementById('card-'+code);if(el)el.scrollIntoView({behavior:'smooth',block:'nearest'});},50);}
+function setFilter(tag,btn){currentFilter=tag;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderGrid();}
+async function loadStats(){try{const r=await fetch('/api/lpti/stats');const d=await r.json();document.getElementById('total-count').textContent=d.total>0?d.total.toLocaleString():'0';}catch(e){document.getElementById('total-count').textContent='-';}}
+renderGrid();loadStats();
+</script>
+</body>
+</html>
