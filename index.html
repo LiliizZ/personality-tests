@@ -44,7 +44,7 @@
       <div class="card-title">父母人格鉴定</div>
       <div class="card-sub">你的父母是哪种类型？<br>20种父母人格 · 30道题 · 5分钟</div>
       <div class="card-btn">开始鉴定父母 →</div>
-      <div class="card-link">查看全部人格图鉴 →</div>
+      <a class="card-link" href="/ppti/types.html" onclick="event.stopPropagation()">查看全部人格图鉴 →</a>
     </a>
     <a class="card lpti" href="/lpti/">
       <span class="card-emoji">💘</span>
@@ -52,7 +52,7 @@
       <div class="card-title">恋爱人格鉴定</div>
       <div class="card-sub">你的另一半是哪种类型？<br>20种恋爱人格 · 30道题 · 5分钟</div>
       <div class="card-btn">开始鉴定恋人 →</div>
-      <div class="card-link">查看全部人格图鉴 →</div>
+      <a class="card-link" href="/lpti/types.html" onclick="event.stopPropagation()">查看全部人格图鉴 →</a>
     </a>
     <a class="card fbti" href="/fbti/">
       <span class="card-emoji">🤝</span>
@@ -60,17 +60,9 @@
       <div class="card-title">朋友人格鉴定</div>
       <div class="card-sub">你的朋友是哪种类型？<br>20种朋友人格 · 30道题 · 5分钟</div>
       <div class="card-btn">开始鉴定朋友 →</div>
-      <div class="card-link">查看全部人格图鉴 →</div>
+      <a class="card-link" href="/fbti/types.html" onclick="event.stopPropagation()">查看全部人格图鉴 →</a>
     </a>
   </div>
   <div class="footer">娱乐向测评 · 纯前端计算 · 不上传任何数据</div>
-  <script>
-    // 点击图鉴链接
-    document.querySelectorAll('.card-link').forEach((el, i) => {
-      const paths = ['/ppti/types.html', '/lpti/types.html', '/fbti/types.html'];
-      el.href = paths[i];
-      el.onclick = e => e.stopPropagation();
-    });
-  </script>
 </body>
 </html>
