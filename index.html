@@ -10,15 +10,17 @@
     .hero{text-align:center;margin-bottom:40px;}
     .hero h1{font-size:clamp(28px,5vw,52px);font-weight:900;letter-spacing:-.03em;margin:0 0 12px;}
     .hero p{color:#666;font-size:16px;margin:0;}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;max-width:960px;width:100%;}
-    .card{background:#fff;border-radius:var(--radius);padding:32px 28px;text-decoration:none;color:inherit;border:2px solid transparent;transition:transform .2s,box-shadow .2s,border-color .2s;box-shadow:0 4px 24px rgba(0,0,0,0.06);}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:960px;width:100%;}
+    .card{background:#fff;border-radius:var(--radius);padding:32px 28px;color:inherit;border:2px solid transparent;transition:transform .2s,box-shadow .2s,border-color .2s;box-shadow:0 4px 24px rgba(0,0,0,0.06);display:flex;flex-direction:column;}
     .card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,0.12);}
     .card-emoji{font-size:48px;margin-bottom:16px;display:block;}
-    .card-badge{font-size:11px;font-weight:800;letter-spacing:.1em;padding:4px 12px;border-radius:999px;display:inline-block;margin-bottom:12px;}
+    .card-badge{font-size:11px;font-weight:800;letter-spacing:.1em;padding:4px 12px;border-radius:999px;display:inline-block;margin-bottom:12px;align-self:flex-start;}
     .card-title{font-size:22px;font-weight:900;margin:0 0 8px;}
-    .card-sub{font-size:13px;color:#888;margin:0 0 20px;line-height:1.6;}
-    .card-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;padding:10px 20px;border-radius:12px;color:#fff;}
-    .card-link{display:block;font-size:12px;color:#aaa;margin-top:10px;text-decoration:underline;}
+    .card-sub{font-size:13px;color:#888;margin:0 0 20px;line-height:1.6;flex:1;}
+    .card-actions{display:flex;flex-direction:column;gap:8px;}
+    .card-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:13px;font-weight:700;padding:11px 20px;border-radius:12px;color:#fff;text-decoration:none;text-align:center;}
+    .card-link{display:block;font-size:12px;color:#aaa;text-decoration:underline;text-align:center;padding:4px 0;}
+    .card-link:hover{color:#666;}
     .ppti{border-color:#fde8d8;}.ppti:hover{border-color:#c2410c;}
     .ppti .card-badge{background:#fde8d8;color:#9a3412;}
     .ppti .card-btn{background:#c2410c;}
@@ -29,7 +31,7 @@
     .fbti .card-badge{background:#dcfce7;color:#065f46;}
     .fbti .card-btn{background:#065f46;}
     .footer{margin-top:40px;color:#aaa;font-size:13px;text-align:center;}
-    @media(max-width:600px){.grid{grid-template-columns:1fr;}}
+    @media(max-width:760px){.grid{grid-template-columns:1fr;}}
   </style>
 </head>
 <body>
@@ -38,30 +40,36 @@
     <p>测完别哭，哭也没用。娱乐向，请勿当真。</p>
   </div>
   <div class="grid">
-    <a class="card ppti" href="/ppti/">
+    <div class="card ppti">
       <span class="card-emoji">👨‍👩‍👧</span>
       <span class="card-badge">PPTI</span>
       <div class="card-title">父母人格鉴定</div>
       <div class="card-sub">你的父母是哪种类型？<br>20种父母人格 · 30道题 · 5分钟</div>
-      <div class="card-btn">开始鉴定父母 →</div>
-      <a class="card-link" href="/ppti/types.html" onclick="event.stopPropagation()">查看全部人格图鉴 →</a>
-    </a>
-    <a class="card lpti" href="/lpti/">
+      <div class="card-actions">
+        <a class="card-btn" href="/ppti/">开始鉴定父母 →</a>
+        <a class="card-link" href="/ppti/types.html">查看全部人格图鉴 →</a>
+      </div>
+    </div>
+    <div class="card lpti">
       <span class="card-emoji">💘</span>
       <span class="card-badge">LPTI</span>
       <div class="card-title">恋爱人格鉴定</div>
       <div class="card-sub">你的另一半是哪种类型？<br>20种恋爱人格 · 30道题 · 5分钟</div>
-      <div class="card-btn">开始鉴定恋人 →</div>
-      <a class="card-link" href="/lpti/types.html" onclick="event.stopPropagation()">查看全部人格图鉴 →</a>
-    </a>
-    <a class="card fbti" href="/fbti/">
+      <div class="card-actions">
+        <a class="card-btn" href="/lpti/">开始鉴定恋人 →</a>
+        <a class="card-link" href="/lpti/types.html">查看全部人格图鉴 →</a>
+      </div>
+    </div>
+    <div class="card fbti">
       <span class="card-emoji">🤝</span>
       <span class="card-badge">FBTI</span>
       <div class="card-title">朋友人格鉴定</div>
       <div class="card-sub">你的朋友是哪种类型？<br>20种朋友人格 · 30道题 · 5分钟</div>
-      <div class="card-btn">开始鉴定朋友 →</div>
-      <a class="card-link" href="/fbti/types.html" onclick="event.stopPropagation()">查看全部人格图鉴 →</a>
-    </a>
+      <div class="card-actions">
+        <a class="card-btn" href="/fbti/">开始鉴定朋友 →</a>
+        <a class="card-link" href="/fbti/types.html">查看全部人格图鉴 →</a>
+      </div>
+    </div>
   </div>
   <div class="footer">娱乐向测评 · 纯前端计算 · 不上传任何数据</div>
 </body>
